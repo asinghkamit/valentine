@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Be tit My Valentine?</title>
+<title>Be toy My Valentine?</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Poppins:wght@600&display=swap" rel="stylesheet">
 
@@ -21,19 +21,43 @@ background:linear-gradient(135deg,#ff9a9e,#fecfef);
 overflow:hidden;
 }
 
-/* CARD */
+/* floating background */
+
+#bg-container{
+position:fixed;
+width:100%;
+height:100%;
+top:0;
+left:0;
+pointer-events:none;
+z-index:0;
+}
+
+.bg-item{
+position:absolute;
+animation:floatUp linear forwards;
+opacity:.9;
+}
+
+@keyframes floatUp{
+0%{transform:translateY(110vh) scale(.5);opacity:0}
+10%{opacity:.9}
+90%{opacity:.9}
+100%{transform:translateY(-10vh) scale(1.2);opacity:0}
+}
+
+/* card */
 
 .card{
 position:relative;
 width:92%;
 max-width:650px;
-background:rgba(255,255,255,0.65);
-backdrop-filter:blur(15px);
+background:rgba(255,255,255,.65);
+backdrop-filter:blur(12px);
 padding:45px;
 border-radius:30px;
 text-align:center;
 z-index:10;
-box-shadow:0 25px 45px rgba(0,0,0,.15);
 }
 
 .card img{
@@ -73,7 +97,7 @@ position:absolute;
 z-index:9999;
 }
 
-/* FLOAT TEXT */
+/* floating NO text */
 
 .float-text{
 position:fixed;
@@ -90,18 +114,6 @@ z-index:99999;
 0%{opacity:1;transform:translateY(0)}
 100%{opacity:0;transform:translateY(-60px)}
 }
-
-/* FIREWORK CANVAS */
-
-#fireworks{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-z-index:5;
-pointer-events:none;
-}
 </style>
 </head>
 
@@ -111,7 +123,7 @@ pointer-events:none;
 <source src="I_Wanna_Be_Yours.mp3" type="audio/mpeg">
 </audio>
 
-<canvas id="fireworks"></canvas>
+<div id="bg-container"></div>
 
 <div class="card" id="card">
 <img src="https://giffiles.alphacoders.com/218/218702.gif">
@@ -141,6 +153,25 @@ audio.play().then(()=>audio.muted=false).catch(()=>{});
 document.addEventListener("click",attemptPlay,{once:true});
 document.addEventListener("touchstart",attemptPlay,{once:true});
 
+/* -------- FLOATING HEARTS & STARS -------- */
+
+const bg=document.getElementById("bg-container");
+
+function makeBg(){
+const el=document.createElement("div");
+el.className="bg-item";
+el.innerHTML=Math.random()<.5?"❤️":"💫";
+el.style.left=Math.random()*100+"vw";
+el.style.fontSize=(18+Math.random()*22)+"px";
+const d=5+Math.random()*5;
+el.style.animationDuration=d+"s";
+bg.appendChild(el);
+setTimeout(()=>el.remove(),d*1000);
+}
+
+for(let i=0;i<35;i++) makeBg();
+setInterval(makeBg,400);
+
 /* -------- NO BUTTON PHRASES -------- */
 
 const phrases=[
@@ -153,13 +184,12 @@ const noBtn=document.getElementById("noBtn");
 
 function handleNo(){
 attemptPlay();
-
-const rect=noBtn.getBoundingClientRect();
-spawnFloatingText(rect.left+rect.width/2,rect.top);
+const r=noBtn.getBoundingClientRect();
+spawnText(r.left+r.width/2,r.top);
 moveButton();
 }
 
-function spawnFloatingText(x,y){
+function spawnText(x,y){
 const el=document.createElement("div");
 el.className="float-text";
 el.innerText=phrases[Math.floor(Math.random()*phrases.length)];
@@ -178,87 +208,13 @@ noBtn.style.left=Math.random()*(innerWidth-120)+"px";
 noBtn.style.top=Math.random()*(innerHeight-60)+"px";
 }
 
-/* -------- FIREWORK ENGINE (BRIGHT DIWALI STYLE) -------- */
-
-const canvas=document.getElementById("fireworks");
-const ctx=canvas.getContext("2d");
-canvas.width=innerWidth;
-canvas.height=innerHeight;
-
-let fireworksActive=false;
-let particles=[];
-
-function Particle(x,y,color){
-this.x=x;
-this.y=y;
-this.vx=(Math.random()-0.5)*12;
-this.vy=(Math.random()-0.5)*12;
-this.life=1;
-this.color=color;
-this.size=2+Math.random()*2;
-}
-
-Particle.prototype.draw=function(){
-ctx.globalAlpha=this.life;
-ctx.fillStyle=this.color;
-ctx.beginPath();
-ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
-ctx.fill();
-ctx.globalAlpha=1;
-}
-
-Particle.prototype.update=function(){
-this.x+=this.vx;
-this.y+=this.vy;
-this.vy+=0.08;
-this.vx*=0.98;
-this.life-=0.015;
-}
-
-function explode(x,y){
-const colors=["#ff0040","#ffae00","#00e5ff","#ffffff","#76ff03","#ff00ff"];
-for(let i=0;i<120;i++){
-particles.push(new Particle(x,y,colors[Math.floor(Math.random()*colors.length)]));
-}
-}
-
-function animate(){
-requestAnimationFrame(animate);
-ctx.fillStyle="rgba(0,0,0,0.15)";
-ctx.fillRect(0,0,canvas.width,canvas.height);
-
-particles.forEach((p,i)=>{
-p.update();
-p.draw();
-if(p.life<=0) particles.splice(i,1);
-});
-}
-animate();
-
 /* -------- YES FLOW -------- */
 
 function sayYes(){
-
 attemptPlay();
 
 document.getElementById("yesBtn").remove();
 document.getElementById("noBtn").remove();
-
-fireworksActive=true;
-
-let fw=setInterval(()=>{
-if(fireworksActive){
-explode(Math.random()*canvas.width,Math.random()*canvas.height*0.7);
-}
-},400);
-
-explode(canvas.width/2,canvas.height/2);
-
-/* after 5 sec show message */
-
-setTimeout(()=>{
-fireworksActive=false;
-clearInterval(fw);
 
 document.getElementById("card").innerHTML=`
 <img src="https://media.tenor.com/gUiu1zyxfzYAAAAi/bear-kiss-bear-kisses.gif">
@@ -266,14 +222,10 @@ document.getElementById("card").innerHTML=`
 <p>I knew you would say yes! See you soon!</p>
 `;
 
-/* stay 5 sec then whatsapp */
-
 setTimeout(()=>{
 window.location.href=
 "https://wa.me/918968492244?text="+
 encodeURIComponent("Yes! I will be your Valentine babu! 😘❤️");
-},5000);
-
 },5000);
 }
 </script>
