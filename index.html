@@ -11,7 +11,7 @@
             align-items: center;
             height: 100vh;
             background-color: #fff0f3;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             margin: 0;
             overflow: hidden; 
         }
@@ -21,7 +21,7 @@
             padding: 40px;
             border-radius: 25px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            width: 420px;
+            width: 400px;
             position: relative;
         }
         .header-image {
@@ -32,16 +32,14 @@
             color: #000;
             font-size: 1.8rem;
             margin-bottom: 35px;
-            font-weight: 600;
         }
-        /* Container to hold buttons side-by-side initially */
         .button-group {
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 20px;
             height: 50px;
-            margin-bottom: 25px;
+            position: relative; /* Essential to keep them together at start */
         }
         #yesBtn {
             background-color: #e91e63;
@@ -61,30 +59,26 @@
             font-size: 16px;
             border-radius: 20px;
             cursor: pointer;
-            /* Transition ensures you see it move rather than vanish */
-            transition: all 0.3s ease-out;
+            transition: all 0.2s ease; /* Faster move so it doesn't "vanish" */
             position: relative; 
             z-index: 999;
         }
         .shy-text {
             color: #5d469f;
             font-size: 13px;
-            margin-top: 15px;
+            margin-top: 25px;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHp1eHptZ3Rsc3B0eXN6eHptZ3Rsc3B0eXN6eHptZ3Rsc3B0eSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/L4lvBzeilMFrq/giphy.gif" alt="Cute character" class="header-image">
-        
+        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHp1eHptZ3Rsc3B0eXN6eHptZ3Rsc3B0eXN6eHptZ3Rsc3B0eSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/L4lvBzeilMFrq/giphy.gif" class="header-image">
         <h1>vandana will you be my valentine?</h1>
-        
         <div class="button-group">
             <button id="yesBtn">Yes</button>
             <button id="noBtn">No</button>
         </div>
-
         <div class="shy-text">"No" seems a bit shy 😈</div>
     </div>
 
@@ -93,26 +87,25 @@
         const yesBtn = document.getElementById('yesBtn');
 
         function moveButton() {
-            // Once touched, we switch to absolute so it can fly anywhere
-            noBtn.style.position = 'absolute';
+            // Switch to fixed position relative to the whole screen
+            noBtn.style.position = 'fixed';
 
-            // Calculate max boundaries so it stays ON the screen
-            const maxX = window.innerWidth - noBtn.offsetWidth;
-            const maxY = window.innerHeight - noBtn.offsetHeight;
+            // Calculate safe area (Screen size - button size - small padding)
+            const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+            const maxY = window.innerHeight - noBtn.offsetHeight - 20;
 
-            // Generate a random spot
-            const randomX = Math.floor(Math.random() * maxX);
-            const randomY = Math.floor(Math.random() * maxY);
+            const randomX = Math.max(20, Math.floor(Math.random() * maxX));
+            const randomY = Math.max(20, Math.floor(Math.random() * maxY));
 
             noBtn.style.left = randomX + 'px';
             noBtn.style.top = randomY + 'px';
         }
 
-        // Triggers the "dodge" on hover
         noBtn.addEventListener('mouseover', moveButton);
-        
-        // Triggers the "dodge" if they are fast enough to click
-        noBtn.addEventListener('click', moveButton);
+        noBtn.addEventListener('click', (e) => {
+            e.preventDefault(); // Extra layer of protection against clicking
+            moveButton();
+        });
 
         yesBtn.addEventListener('click', () => {
             document.querySelector('.container').innerHTML = `
