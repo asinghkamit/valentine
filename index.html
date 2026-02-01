@@ -64,6 +64,7 @@
             text-align: center;
             box-shadow: 0 25px 45px rgba(0,0,0,0.15);
             z-index: 10;
+            transition: height 0.3s ease;
         }
 
         .card img {
@@ -172,10 +173,10 @@
 <body>
 
     <!-- AUDIO ELEMENT (HIDDEN) -->
-    <!-- REPLACE 'song.mp3' with your actual file or URL if needed -->
+    <!-- Put your 'only one' song file here. Example: 'only_one.mp3' -->
     <audio id="loveSong">
-        <source src="song.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
+        <source src="https://www.myinstants.com/media/sounds/kanye-west-only-one.mp3" type="audio/mpeg">
+        <!-- If you have a local file, change the src to "only_one.mp3" -->
     </audio>
 
     <div id="bg-container"></div>
@@ -201,6 +202,9 @@
         const card = document.getElementById('card');
         const bgContainer = document.getElementById('bg-container');
         const audio = document.getElementById('loveSong');
+        
+        // Flag to control fireworks
+        let fireworksActive = false;
 
         // --- RANDOM TEXT PHRASES FOR 'NO' BUTTON ---
         const phrases = [
@@ -216,36 +220,22 @@
 
         // 1. RUNAWAY LOGIC + FLOATING TEXT
         function handleNo() {
-            // Get current position for the floating text
             const rect = noBtn.getBoundingClientRect();
             const x = rect.left + (rect.width / 2);
             const y = rect.top;
-
-            // Spawn the text
             spawnFloatingText(x, y);
-
-            // Move the button
             moveButton();
         }
 
         function spawnFloatingText(x, y) {
             const el = document.createElement('div');
             el.classList.add('float-text');
-            // Pick random text
             el.innerText = phrases[Math.floor(Math.random() * phrases.length)];
-            
-            // Random jitter so they don't appear in exact same spot
             const jitterX = (Math.random() * 50) - 25;
-            
             el.style.left = (x + jitterX) + 'px';
             el.style.top = y + 'px';
-            
             document.body.appendChild(el);
-
-            // Remove after animation finishes
-            setTimeout(() => {
-                el.remove();
-            }, 1000);
+            setTimeout(() => { el.remove(); }, 1000);
         }
 
         function moveButton() {
@@ -263,31 +253,41 @@
             noBtn.style.top = randomY + 'px';
         }
 
-        // 2. SUCCESS LOGIC & FIREWORKS & SONG
+        // 2. SUCCESS LOGIC
         function sayYes() {
+            // A. Remove Buttons Immediately
             if(noBtn) noBtn.remove();
+            yesBtn.remove();
+            document.querySelector('.shy-text').style.display = 'none';
 
-            // Change card content
-            card.innerHTML = `
-                <img src="https://media.tenor.com/gUiu1zyxfzYAAAAi/bear-kiss-bear-kisses.gif" alt="Hugging Bears" style="max-width: 300px;">
-                <h1>YEEEY! ❤️</h1>
-                <p>I knew you would say yes! See you soon!</p>
-            `;
+            // B. Play Song
+            audio.play().catch(e => console.log("Audio play error: " + e));
 
-            // PLAY SONG
-            // Note: Browsers require user interaction (click) to play audio, which is perfect here.
-            audio.play().catch(e => console.log("Audio couldn't play automatically: " + e));
-
-            // START FIREWORKS
+            // C. Start Fireworks (Before opening the "Yeey" page)
+            fireworksActive = true;
             startFireworks();
 
-            // WAIT 4 SECONDS THEN REDIRECT
+            // D. Wait 5 Seconds, then show the "Yeey" Page
             setTimeout(function() {
-                let phoneNumber = "918968492244"; 
-                let message = "Yes! I will be your Valentine babu! 😘😘❤️";
-                let url = "https://wa.me/" + phoneNumber + "?text=" + encodeURIComponent(message);
-                window.open(url, '_blank');
-            }, 4000); // 4000ms = 4 seconds
+                // Stop generating new fireworks (fade out)
+                fireworksActive = false;
+                
+                // Change Content
+                card.innerHTML = `
+                    <img src="https://media.tenor.com/gUiu1zyxfzYAAAAi/bear-kiss-bear-kisses.gif" alt="Hugging Bears" style="max-width: 300px;">
+                    <h1>YEEEY! ❤️</h1>
+                    <p>I knew you would say yes! See you soon!</p>
+                `;
+
+                // E. Wait 3 more seconds for her to read it, then WhatsApp
+                setTimeout(function() {
+                    let phoneNumber = "918968492244"; 
+                    let message = "Yes! I will be your Valentine babu! 😘😘❤️";
+                    let url = "https://wa.me/" + phoneNumber + "?text=" + encodeURIComponent(message);
+                    window.open(url, '_blank');
+                }, 3000); 
+
+            }, 5000); // 5 Seconds Interval
         }
 
         // 3. BACKGROUND HEARTS & STARS
@@ -307,23 +307,17 @@
             }
 
             bgContainer.appendChild(el);
-            setTimeout(() => {
-                el.remove();
-            }, duration * 1000); 
+            setTimeout(() => { el.remove(); }, duration * 1000); 
         }
 
         function initBackground() {
-            for(let i=0; i<35; i++) {
-                createFloatingElement(true); 
-            }
+            for(let i=0; i<35; i++) { createFloatingElement(true); }
         }
         initBackground();
 
-        setInterval(() => {
-            createFloatingElement(false);
-        }, 400);
+        setInterval(() => { createFloatingElement(false); }, 400);
 
-        // 4. FIREWORKS ENGINE (Bright & Colorful)
+        // 4. FIREWORKS ENGINE
         function startFireworks() {
             const canvas = document.getElementById('fireworks');
             const ctx = canvas.getContext('2d');
@@ -335,10 +329,10 @@
             function Particle(x, y, color) {
                 this.x = x;
                 this.y = y;
-                this.radius = Math.random() * 3 + 2; // Bigger particles
+                this.radius = Math.random() * 3 + 2; 
                 this.color = color;
                 this.velocity = {
-                    x: (Math.random() - 0.5) * 10, // Faster explosion
+                    x: (Math.random() - 0.5) * 10,
                     y: (Math.random() - 0.5) * 10
                 };
                 this.alpha = 1;
@@ -362,12 +356,12 @@
                 this.velocity.y += this.gravity;
                 this.x += this.velocity.x;
                 this.y += this.velocity.y;
-                this.alpha -= 0.015; // Fade out speed
+                this.alpha -= 0.015;
             }
 
             function createExplosion(x, y) {
                 const colors = ['#ff0040', '#ff0080', '#ffeb3b', '#00e5ff', '#ffffff', '#76ff03'];
-                for (let i = 0; i < 80; i++) { // More particles per explosion
+                for (let i = 0; i < 80; i++) { 
                     const color = colors[Math.floor(Math.random() * colors.length)];
                     particles.push(new Particle(x, y, color));
                 }
@@ -375,7 +369,6 @@
 
             function animate() {
                 requestAnimationFrame(animate);
-                // Create trail effect
                 ctx.fillStyle = 'rgba(0, 0, 0, 0.1)'; 
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -390,14 +383,21 @@
             }
             animate();
 
-            // Automatic bursts
-            setInterval(() => {
-                const x = Math.random() * canvas.width;
-                const y = Math.random() * (canvas.height * 0.7);
-                createExplosion(x, y);
-            }, 500); // Burst every 0.5 seconds
+            // Fireworks Loop
+            let fireworksInterval = setInterval(() => {
+                if (fireworksActive) {
+                    const x = Math.random() * canvas.width;
+                    const y = Math.random() * (canvas.height * 0.7);
+                    createExplosion(x, y);
+                } else {
+                    // Stop creating new ones, clear interval
+                    clearInterval(fireworksInterval);
+                    // Clear canvas after particles fade
+                    setTimeout(() => { ctx.clearRect(0,0,canvas.width, canvas.height); }, 2000);
+                }
+            }, 500);
 
-            // Immediate big burst in center
+            // Immediate burst
             createExplosion(canvas.width / 2, canvas.height / 2);
         }
     </script>
