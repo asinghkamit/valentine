@@ -11,62 +11,82 @@
             align-items: center;
             height: 100vh;
             background-color: #fff0f3;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             overflow: hidden; 
         }
         .container {
             text-align: center;
             background: white;
-            padding: 50px;
-            border-radius: 30px;
-            box-shadow: 0 15px 35px rgba(255, 75, 110, 0.2);
-            width: 450px;
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            width: 420px;
+            position: relative;
+        }
+        /* Top GIF styling */
+        .header-image {
+            width: 120px;
+            margin-bottom: 20px;
         }
         h1 {
-            color: #ff4b6e;
-            margin-bottom: 40px;
+            color: #000;
+            font-size: 1.8rem;
+            margin-bottom: 35px;
+            font-weight: 600;
         }
+        /* Button layout and sizes matching your image */
         .button-group {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 30px;
-            height: 80px;
+            gap: 20px;
+            height: 50px;
+            margin-bottom: 25px;
         }
         #yesBtn {
-            background-color: #ff4b6e;
+            background-color: #e91e63; /* Pink from your image */
             color: white;
             border: none;
-            padding: 15px 40px;
-            font-size: 20px;
+            padding: 8px 30px;
+            font-size: 16px;
             font-weight: bold;
-            border-radius: 50px;
+            border-radius: 20px;
             cursor: pointer;
-            transition: transform 0.2s;
         }
         #noBtn {
-            background-color: #f8f9fa;
-            color: #6c757d;
-            border: 2px solid #dee2e6;
-            padding: 15px 40px;
-            font-size: 20px;
-            border-radius: 50px;
+            background-color: #e8e8e8; /* Light grey from your image */
+            color: #555;
+            border: none;
+            padding: 8px 30px;
+            font-size: 16px;
+            border-radius: 20px;
             cursor: pointer;
             transition: all 0.3s ease-out;
             position: relative; 
-            z-index: 999;
+            z-index: 10;
+        }
+        /* Shy text at the bottom */
+        .shy-text {
+            color: #5d469f; /* Deep purple/blue tone */
+            font-size: 13px;
+            margin-top: 15px;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>Vandana, will you be my valentine?</h1>
+        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHp1eHptZ3Rsc3B0eXN6eHptZ3Rsc3B0eXN6eHptZ3Rsc3B0eSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/L4lvBzeilMFrq/giphy.gif" alt="Cute character" class="header-image">
+        
+        <h1>vandana will you be my valentine?</h1>
+        
         <div class="button-group">
             <button id="yesBtn">Yes</button>
             <button id="noBtn">No</button>
         </div>
+
+        <div class="shy-text">"No" seems a bit shy 😈</div>
     </div>
 
     <script>
@@ -76,6 +96,7 @@
         function moveButton() {
             noBtn.style.position = 'absolute';
 
+            // Calculate safe boundaries
             const maxX = window.innerWidth - noBtn.offsetWidth;
             const maxY = window.innerHeight - noBtn.offsetHeight;
 
@@ -91,8 +112,8 @@
 
         yesBtn.addEventListener('click', () => {
             document.querySelector('.container').innerHTML = `
-                <h1 style="font-size: 3rem;">❤️ Yay! ❤️</h1>
-                <p style="font-size: 1.5rem; color: #555;">I knew you'd say yes, Vandana!</p>
+                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHp1eHptZ3Rsc3B0eXN6eHptZ3Rsc3B0eXN6eHptZ3Rsc3B0eSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/iCVz2SSs1L9RYatXhe/giphy.gif" class="header-image">
+                <h1 style="color: #e91e63;">Yay! See you on the 14th! ❤️</h1>
             `;
         });
     </script>
