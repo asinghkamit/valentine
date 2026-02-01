@@ -24,7 +24,6 @@
             width: 420px;
             position: relative;
         }
-        /* Top GIF styling */
         .header-image {
             width: 120px;
             margin-bottom: 20px;
@@ -35,7 +34,7 @@
             margin-bottom: 35px;
             font-weight: 600;
         }
-        /* Button layout and sizes matching your image */
+        /* Container to hold buttons side-by-side initially */
         .button-group {
             display: flex;
             justify-content: center;
@@ -45,7 +44,7 @@
             margin-bottom: 25px;
         }
         #yesBtn {
-            background-color: #e91e63; /* Pink from your image */
+            background-color: #e91e63;
             color: white;
             border: none;
             padding: 8px 30px;
@@ -55,20 +54,20 @@
             cursor: pointer;
         }
         #noBtn {
-            background-color: #e8e8e8; /* Light grey from your image */
+            background-color: #e8e8e8;
             color: #555;
             border: none;
             padding: 8px 30px;
             font-size: 16px;
             border-radius: 20px;
             cursor: pointer;
+            /* Transition ensures you see it move rather than vanish */
             transition: all 0.3s ease-out;
             position: relative; 
-            z-index: 10;
+            z-index: 999;
         }
-        /* Shy text at the bottom */
         .shy-text {
-            color: #5d469f; /* Deep purple/blue tone */
+            color: #5d469f;
             font-size: 13px;
             margin-top: 15px;
         }
@@ -94,12 +93,14 @@
         const yesBtn = document.getElementById('yesBtn');
 
         function moveButton() {
+            // Once touched, we switch to absolute so it can fly anywhere
             noBtn.style.position = 'absolute';
 
-            // Calculate safe boundaries
+            // Calculate max boundaries so it stays ON the screen
             const maxX = window.innerWidth - noBtn.offsetWidth;
             const maxY = window.innerHeight - noBtn.offsetHeight;
 
+            // Generate a random spot
             const randomX = Math.floor(Math.random() * maxX);
             const randomY = Math.floor(Math.random() * maxY);
 
@@ -107,7 +108,10 @@
             noBtn.style.top = randomY + 'px';
         }
 
+        // Triggers the "dodge" on hover
         noBtn.addEventListener('mouseover', moveButton);
+        
+        // Triggers the "dodge" if they are fast enough to click
         noBtn.addEventListener('click', moveButton);
 
         yesBtn.addEventListener('click', () => {
