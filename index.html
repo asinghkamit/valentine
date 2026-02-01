@@ -4,74 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Be My Valentine?</title>
-    <!-- Google Fonts -->
+    
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* --- CSS STYLES --- */
-        :root {
-            --primary-color: #ff4d6d;
-            --secondary-color: #ff8fa3;
-            --bg-gradient: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
-            --glass-bg: rgba(255, 255, 255, 0.6);
-            --glass-border: rgba(255, 255, 255, 0.8);
+        /* --- 1. RESET & BODY STYLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        body, html {
-            height: 100%;
-            margin: 0;
-            overflow: hidden; /* Stop scrollbars */
+        body {
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden; /* Prevents scrollbars when button moves to edge */
             font-family: 'Poppins', sans-serif;
-            background-image: var(--bg-gradient);
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
         }
 
-        /* Floating Hearts Background */
-        .bg-heart {
+        /* --- 2. FLOATING HEARTS BACKGROUND --- */
+        .heart-bg {
             position: absolute;
             color: rgba(255, 255, 255, 0.5);
-            font-size: 20px;
-            animation: float 6s linear infinite;
-            z-index: -1;
-            user-select: none;
+            font-size: 24px;
+            animation: floatUp 6s linear infinite;
+            z-index: 0; /* Behind everything */
         }
 
-        @keyframes float {
-            0% { transform: translateY(110vh) scale(0); opacity: 0; }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
             50% { opacity: 0.8; }
-            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
         }
 
-        /* Main Card */
-        .container {
-            text-align: center;
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+        /* --- 3. THE WHITE GLASS CARD --- */
+        .card {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 2px solid rgba(255, 255, 255, 0.9);
             padding: 40px;
-            border-radius: 20px;
-            border: 2px solid var(--glass-border);
+            border-radius: 25px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            max-width: 90%;
-            width: 400px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            z-index: 10; /* Above background */
             position: relative;
-            z-index: 1; /* Low z-index so button can go over it */
         }
 
-        .gif-container img {
+        .card img {
             width: 100%;
-            max-width: 250px;
+            max-width: 220px;
             border-radius: 15px;
             margin-bottom: 20px;
-            box-shadow: 0 8px 20px rgba(255, 77, 109, 0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         h1 {
             font-family: 'Indie Flower', cursive;
             color: #d6335c;
             font-size: 2.5rem;
-            margin-bottom: 10px;
+            line-height: 1.2;
+            margin-bottom: 15px;
         }
 
         p {
@@ -80,174 +81,70 @@
             margin-bottom: 30px;
         }
 
-        /* --- BUTTONS --- */
-        .btn-container {
+        /* --- 4. BUTTONS --- */
+        .btn-group {
             display: flex;
             justify-content: center;
             gap: 20px;
-            margin-top: 20px;
-            position: relative; /* Keep context */
+            align-items: center;
+            min-height: 60px; /* Reserves space so layout doesn't jump */
         }
 
-        .btn {
-            padding: 12px 30px;
-            font-size: 1.1rem;
-            font-weight: 600;
+        button {
+            padding: 12px 32px;
+            font-size: 1.2rem;
+            font-weight: bold;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            white-space: nowrap;
+            transition: transform 0.2s;
+            outline: none;
         }
 
         .yes-btn {
-            background-color: var(--primary-color);
+            background-color: #ff4d6d;
             color: white;
-            transition: transform 0.2s ease;
-            z-index: 5;
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.3);
+            z-index: 20; /* Keep it clickable */
         }
 
         .yes-btn:hover {
-            transform: scale(1.05);
-            background-color: #d6335c;
+            transform: scale(1.1);
+            background-color: #e01e45;
         }
 
         .no-btn {
             background-color: white;
-            color: var(--primary-color);
-            position: static; /* Starts next to Yes */
+            color: #ff4d6d;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             
-            /* CRITICAL: High z-index ensures it never disappears behind card */
-            z-index: 9999; 
+            /* CRITICAL FIX: High Z-index ensures it floats over everything */
+            z-index: 1000; 
             
-            /* Smooth transition makes it look like it's sliding */
-            transition: top 0.3s ease, left 0.3s ease; 
+            /* Transition makes the movement smooth */
+            transition: all 0.3s ease;
         }
 
-        /* Confetti Canvas */
-        #confetti-canvas {
+        /* Canvas for confetti */
+        #confetti {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             pointer-events: none;
-            z-index: 999;
+            z-index: 9999;
         }
     </style>
 </head>
 <body>
 
-    <div id="hearts-container"></div>
-    <canvas id="confetti-canvas"></canvas>
+    <!-- Background Decoration -->
+    <div id="hearts-layer"></div>
+    <canvas id="confetti"></canvas>
 
-    <div class="container" id="main-card">
-        <div class="gif-container">
-            <img id="main-img" src="https://media.tenor.com/K2sE88y2S0AAAAAAAAAi/bear-kiss-bear-kisses.gif" alt="Cute Bear">
-        </div>
-        <h1 id="question">Will you be my Valentine?</h1>
-        <p>I promise to buy you chocolates! 🍫</p>
-        
-        <div class="btn-container">
-            <button class="btn yes-btn" onclick="acceptLove()">Yes</button>
-            
-            <!-- Mouseover for desktop, Touchstart for mobile -->
-            <button class="btn no-btn" id="noBtn" onmouseover="moveButton()" ontouchstart="moveButton()">No</button>
-        </div>
-    </div>
-
-    <script>
-        const noBtn = document.getElementById('noBtn');
-        const yesBtn = document.querySelector('.yes-btn');
-
-        // Function to move the No button randomly
-        function moveButton() {
-            // 1. Get the screen width and height
-            const windowWidth = window.innerWidth;
-            const windowHeight = window.innerHeight;
-
-            // 2. Get button size
-            const btnWidth = noBtn.offsetWidth;
-            const btnHeight = noBtn.offsetHeight;
-
-            // 3. Calculate safe random positions
-            // We subtract the button size AND a 20px buffer so it never touches the edge
-            const maxX = windowWidth - btnWidth - 20;
-            const maxY = windowHeight - btnHeight - 20;
-
-            const randomX = Math.random() * maxX;
-            const randomY = Math.random() * maxY;
-
-            // 4. Apply the new styles
-            // 'fixed' makes it relative to the whole screen (breaking out of the card)
-            noBtn.style.position = 'fixed'; 
-            
-            // Ensure coordinates are positive (at least 10px from top/left)
-            noBtn.style.left = (randomX + 10) + 'px';
-            noBtn.style.top = (randomY + 10) + 'px';
-        }
-
-        // Acceptance Logic
-        function acceptLove() {
-            const card = document.getElementById('main-card');
-            
-            card.innerHTML = `
-                <div class="gif-container">
-                    <img src="https://media.tenor.com/gUiu1zyxfzYAAAAi/bear-kiss-bear-kisses.gif" alt="Hugging Bears">
-                </div>
-                <h1>YEEEY! ❤️</h1>
-                <p>I knew you would say yes! See you soon!</p>
-            `;
-            
-            // Reset padding and start confetti
-            startConfetti();
-        }
-
-        /* --- BACKGROUND EFFECTS --- */
-
-        // Floating Hearts
-        setInterval(() => {
-            const heart = document.createElement('div');
-            heart.classList.add('bg-heart');
-            heart.innerHTML = '❤️';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = Math.random() * 3 + 3 + 's';
-            document.getElementById('hearts-container').appendChild(heart);
-            setTimeout(() => heart.remove(), 6000);
-        }, 300);
-
-        // Confetti
-        function startConfetti() {
-            const canvas = document.getElementById('confetti-canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            
-            const pieces = [];
-            for (let i = 0; i < 200; i++) {
-                pieces.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height - canvas.height,
-                    color: `hsl(${Math.random() * 360}, 100%, 75%)`,
-                    size: Math.random() * 5 + 5,
-                    speed: Math.random() * 5 + 2
-                });
-            }
-
-            function draw() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                pieces.forEach(p => {
-                    ctx.fillStyle = p.color;
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                    ctx.fill();
-                    p.y += p.speed;
-                    if (p.y > canvas.height) p.y = 0;
-                });
-                requestAnimationFrame(draw);
-            }
-            draw();
-        }
-    </script>
-</body>
-</html>
+    <!-- Main Card -->
+    <div class="card" id="mainCard">
+        <img id="gifImage" src="https://media.tenor.com/K2sE88y2S0AAAAAAAAAi/bear-kiss-bear-kisses.gif" alt="Cute Bear">
+        <h1 id="mainTitle">Will you be my Valentine?</h1>
+        <p id="subText">I promise to buy you chocolates! 🍫</
