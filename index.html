@@ -20,14 +20,17 @@
             overflow: hidden; 
         }
 
-        /* --- BACKGROUND HEARTS --- */
-        .heart {
+        /* --- BACKGROUND FLOATING ITEMS (Hearts & Stars) --- */
+        .bg-item {
             position: absolute;
-            color: #fff;
-            opacity: 0.5;
+            color: #fff; /* Falls back to white if not emoji */
+            opacity: 0.6; /* Slightly higher opacity for visibility */
             animation: float 6s linear infinite;
             z-index: 0;
+            user-select: none;
+            pointer-events: none;
         }
+
 
         @keyframes float {
             0% { transform: translateY(100vh) scale(0); opacity: 0; }
