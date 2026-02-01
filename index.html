@@ -21,7 +21,7 @@
             padding: 40px;
             border-radius: 25px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            width: 400px;
+            width: 420px;
             position: relative;
         }
         .header-image {
@@ -29,9 +29,11 @@
             margin-bottom: 20px;
         }
         h1 {
-            color: #000;
+            /* Restored to the pink/red color from your earlier request */
+            color: #e94d67; 
             font-size: 1.8rem;
             margin-bottom: 35px;
+            font-weight: bold;
         }
         .button-group {
             display: flex;
@@ -39,34 +41,36 @@
             align-items: center;
             gap: 20px;
             height: 50px;
-            position: relative; /* Essential to keep them together at start */
+            margin-bottom: 25px;
         }
         #yesBtn {
             background-color: #e91e63;
             color: white;
             border: none;
-            padding: 8px 30px;
-            font-size: 16px;
+            /* Updated to the earlier button size */
+            padding: 10px 35px;
+            font-size: 18px;
             font-weight: bold;
-            border-radius: 20px;
+            border-radius: 15px; 
             cursor: pointer;
         }
         #noBtn {
-            background-color: #e8e8e8;
-            color: #555;
+            background-color: #f1f1f1;
+            color: #757575;
             border: none;
-            padding: 8px 30px;
-            font-size: 16px;
-            border-radius: 20px;
+            /* Updated to the smaller button size */
+            padding: 8px 25px;
+            font-size: 14px;
+            border-radius: 15px;
             cursor: pointer;
-            transition: all 0.2s ease; /* Faster move so it doesn't "vanish" */
+            transition: all 0.2s ease-out;
             position: relative; 
             z-index: 999;
         }
         .shy-text {
             color: #5d469f;
             font-size: 13px;
-            margin-top: 25px;
+            margin-top: 15px;
         }
     </style>
 </head>
@@ -74,11 +78,14 @@
 
     <div class="container">
         <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHp1eHptZ3Rsc3B0eXN6eHptZ3Rsc3B0eXN6eHptZ3Rsc3B0eSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/L4lvBzeilMFrq/giphy.gif" class="header-image">
+        
         <h1>vandana will you be my valentine?</h1>
+        
         <div class="button-group">
             <button id="yesBtn">Yes</button>
             <button id="noBtn">No</button>
         </div>
+
         <div class="shy-text">"No" seems a bit shy 😈</div>
     </div>
 
@@ -87,10 +94,8 @@
         const yesBtn = document.getElementById('yesBtn');
 
         function moveButton() {
-            // Switch to fixed position relative to the whole screen
             noBtn.style.position = 'fixed';
 
-            // Calculate safe area (Screen size - button size - small padding)
             const maxX = window.innerWidth - noBtn.offsetWidth - 20;
             const maxY = window.innerHeight - noBtn.offsetHeight - 20;
 
@@ -102,10 +107,7 @@
         }
 
         noBtn.addEventListener('mouseover', moveButton);
-        noBtn.addEventListener('click', (e) => {
-            e.preventDefault(); // Extra layer of protection against clicking
-            moveButton();
-        });
+        noBtn.addEventListener('click', moveButton);
 
         yesBtn.addEventListener('click', () => {
             document.querySelector('.container').innerHTML = `
