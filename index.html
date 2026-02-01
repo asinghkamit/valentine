@@ -39,8 +39,8 @@
         .card {
             position: relative;
             width: 90%;
-            /* REVERTED: Changed from 600px back to 500px so it's not too big */
-            max-width: 500px; 
+            /* WIDER: Increased to 650px as requested */
+            max-width: 650px; 
             
             /* Premium Glass Effect */
             background: rgba(255, 255, 255, 0.65);
@@ -48,7 +48,7 @@
             backdrop-filter: blur(15px);
             
             /* Spacing */
-            padding: 40px; /* Balanced padding */
+            padding: 50px 40px;
             border-radius: 35px;
             text-align: center;
             box-shadow: 0 25px 45px rgba(0,0,0,0.15);
@@ -58,7 +58,7 @@
 
         .card img {
             width: 100%;
-            max-width: 250px; /* Slightly adjusted to fit perfectly */
+            max-width: 250px; 
             border-radius: 15px;
             margin-bottom: 20px;
         }
@@ -73,7 +73,7 @@
 
         p {
             color: #7a4f5a;
-            margin-bottom: 30px; /* Reduced slightly to save height */
+            margin-bottom: 30px; 
             font-size: 1.2rem;
             font-weight: 500;
         }
@@ -114,15 +114,13 @@
             color: #ff4d6d;
         }
 
-        /* --- THE TEXT YOU WANTED ADJUSTED --- */
+        /* --- SHY TEXT (Kept at bottom) --- */
         .shy-text {
             color: #5d469f;
             font-size: 1rem; 
             font-weight: 600;  
             font-style: italic;
-            
-            /* Pushed down, but because the box is smaller, it looks proportionate now */
-            margin-top: 50px;   
+            margin-top: 50px; /* Kept the spacing you liked */
             opacity: 0.8;
         }
 
