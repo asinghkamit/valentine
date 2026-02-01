@@ -1,13 +1,112 @@
-<div class="card" id="mainCard">
-    <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueGZ4bmZ4bmZ4bmZ4bmZ4bmZ4bmZ4bmZ4bmZ4bmZ4bmZ4/3o7TKoWXm3okO1kgHC/giphy.gif" alt="Cute Cat">
-    <h1>Vandana, will you be my valentine?</h1>
-    <div class="buttons">
-        <button id="yesBtn">Yes</button>
-        <button id="noBtn">No</button>
-    </div>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Nirali</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #fce4ec; /* Light pink background */
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            min-height: 100px;
+        }
+        #yesBtn {
+            background-color: #e91e63; /* Pinkish-red */
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        #noBtn {
+            background-color: #eee;
+            color: #555;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
 
-<div id="successMessage" style="display: none; text-align: center;">
-    <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpueGZ4bmZ4bmZ4bmZ4bmZ4bmZ4bmZ4bmZ4bmZ4bmZ4bmZ4/l41lHSR6X40n6rB1S/giphy.gif" alt="Happy Cat">
-    <h1 style="color: #ff4081;">Yay! See you on Feb 14th! ❤️</h1>
-</div>
+    <div class="container" id="mainContainer">
+        <h1 id="question">Nirali, will you be my valentine?</h1>
+        <div class="buttons">
+            <button id="yesBtn">Yes</button>
+            <button id="noBtn">No</button>
+        </div>
+        <p id="message" style="margin-top: 20px; color: #e91e63; font-style: italic;"></p>
+    </div>
+
+    <script>
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const question = document.getElementById('question');
+        const mainContainer = document.getElementById('mainContainer');
+
+        let yesSize = 18;
+        let noSize = 16;
+        const messages = [
+            "Are you sure?",
+            "Think again!",
+            "Last chance!",
+            "Surely not?",
+            "You're breaking my heart :(",
+            "\"No\" seems a bit shy 😈"
+        ];
+        let msgIndex = 0;
+
+        noBtn.addEventListener('click', () => {
+            // Make "Yes" bigger
+            yesSize += 20;
+            yesBtn.style.fontSize = yesSize + 'px';
+            yesBtn.style.padding = (yesSize/1.2) + 'px ' + (yesSize * 1.5) + 'px';
+
+            // Make "No" smaller
+            noSize -= 2;
+            noBtn.style.fontSize = noSize + 'px';
+            
+            // Change message
+            document.getElementById('message').innerText = messages[msgIndex];
+            msgIndex = (msgIndex + 1) % messages.length;
+
+            if (noSize <= 4) {
+                noBtn.style.display = 'none'; // Hide it if it gets too small
+            }
+        });
+
+        yesBtn.addEventListener('click', () => {
+            mainContainer.innerHTML = `
+                <h1 style="color: #e91e63;">Yay! See you on the 14th! ❤️</h1>
+                <p>I knew you'd say yes!</p>
+            `;
+        });
+    </script>
+</body>
+</html>
