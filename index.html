@@ -16,18 +16,26 @@
             overflow: hidden; 
         }
         .container {
-            text-align: center;
-            background: white;
-            /* I increased padding and width here for a bigger desktop look */
-            padding: 80px 60px; 
-            border-radius: 40px;
-            box-shadow: 0 15px 45px rgba(255, 75, 110, 0.15);
-            width: 650px; /* Made the box much wider */
-            position: relative;
+           text-align: center;
+    background: white;
+    /* Adjusted padding: less top/bottom, balanced sides */
+    padding: 50px 40px; 
+    border-radius: 30px;
+    box-shadow: 0 15px 45px rgba(255, 75, 110, 0.15);
+    
+    /* Using max-width instead of fixed width for a better 'box' feel */
+    width: 90%;
+    max-width: 550px; 
+    
+    position: relative;
+    transition: transform 0.3s ease;
         }
         .header-image {
-            width: 150px; /* Scaled up the GIF slightly to match the box */
-            margin-bottom: 30px;
+            width: 180px; /* Slightly larger to fill the width better */
+    height: auto;
+    margin-bottom: 20px;
+    border-radius: 15px;
+  }
         }
         h1 {
             color: #e94d67; 
