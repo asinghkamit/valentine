@@ -19,7 +19,7 @@
         body, html {
             height: 100%;
             margin: 0;
-            overflow: hidden;
+            overflow: hidden; /* Stop scrollbars */
             font-family: 'Poppins', sans-serif;
             background-image: var(--bg-gradient);
             display: flex;
@@ -56,7 +56,7 @@
             max-width: 90%;
             width: 400px;
             position: relative;
-            z-index: 10;
+            z-index: 1; /* Low z-index so button can go over it */
         }
 
         .gif-container img {
@@ -84,8 +84,9 @@
         .btn-container {
             display: flex;
             justify-content: center;
-            gap: 20px; /* Space between buttons */
+            gap: 20px;
             margin-top: 20px;
+            position: relative; /* Keep context */
         }
 
         .btn {
@@ -95,15 +96,15 @@
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: transform 0.2s ease;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            white-space: nowrap; /* Prevent text wrapping */
+            white-space: nowrap;
         }
 
         .yes-btn {
             background-color: var(--primary-color);
             color: white;
-            z-index: 10;
+            transition: transform 0.2s ease;
+            z-index: 5;
         }
 
         .yes-btn:hover {
@@ -114,9 +115,13 @@
         .no-btn {
             background-color: white;
             color: var(--primary-color);
-            /* Initially static so it sits next to Yes */
-            position: static; 
-            z-index: 20; /* High z-index so it's always clickable */
+            position: static; /* Starts next to Yes */
+            
+            /* CRITICAL: High z-index ensures it never disappears behind card */
+            z-index: 9999; 
+            
+            /* Smooth transition makes it look like it's sliding */
+            transition: top 0.3s ease, left 0.3s ease; 
         }
 
         /* Confetti Canvas */
@@ -138,7 +143,6 @@
 
     <div class="container" id="main-card">
         <div class="gif-container">
-            <!-- Starting GIF -->
             <img id="main-img" src="https://media.tenor.com/K2sE88y2S0AAAAAAAAAi/bear-kiss-bear-kisses.gif" alt="Cute Bear">
         </div>
         <h1 id="question">Will you be my Valentine?</h1>
@@ -146,36 +150,47 @@
         
         <div class="btn-container">
             <button class="btn yes-btn" onclick="acceptLove()">Yes</button>
-            <!-- Added ontouchstart for mobile support -->
+            
+            <!-- Mouseover for desktop, Touchstart for mobile -->
             <button class="btn no-btn" id="noBtn" onmouseover="moveButton()" ontouchstart="moveButton()">No</button>
         </div>
     </div>
 
     <script>
-        /* --- LOGIC --- */
-
         const noBtn = document.getElementById('noBtn');
         const yesBtn = document.querySelector('.yes-btn');
 
-        // This runs when she hovers or touches "No"
+        // Function to move the No button randomly
         function moveButton() {
-            // 1. Make the button absolute/fixed so it can move freely anywhere
+            // 1. Get the screen width and height
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+
+            // 2. Get button size
+            const btnWidth = noBtn.offsetWidth;
+            const btnHeight = noBtn.offsetHeight;
+
+            // 3. Calculate safe random positions
+            // We subtract the button size AND a 20px buffer so it never touches the edge
+            const maxX = windowWidth - btnWidth - 20;
+            const maxY = windowHeight - btnHeight - 20;
+
+            const randomX = Math.random() * maxX;
+            const randomY = Math.random() * maxY;
+
+            // 4. Apply the new styles
+            // 'fixed' makes it relative to the whole screen (breaking out of the card)
             noBtn.style.position = 'fixed'; 
             
-            // 2. Calculate random X and Y positions based on screen size
-            // We subtract the button width/height so it doesn't go off-screen
-            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
-
-            // 3. Apply the new position
-            noBtn.style.left = `${x}px`;
-            noBtn.style.top = `${y}px`;
+            // Ensure coordinates are positive (at least 10px from top/left)
+            noBtn.style.left = (randomX + 10) + 'px';
+            noBtn.style.top = (randomY + 10) + 'px';
         }
 
+        // Acceptance Logic
         function acceptLove() {
             const card = document.getElementById('main-card');
             
-            // Change content to celebration
             card.innerHTML = `
                 <div class="gif-container">
                     <img src="https://media.tenor.com/gUiu1zyxfzYAAAAi/bear-kiss-bear-kisses.gif" alt="Hugging Bears">
@@ -184,13 +199,13 @@
                 <p>I knew you would say yes! See you soon!</p>
             `;
             
-            // Start Confetti
+            // Reset padding and start confetti
             startConfetti();
         }
 
-        // --- Background Effects (Hearts & Confetti) --- //
+        /* --- BACKGROUND EFFECTS --- */
 
-        // Create floating hearts
+        // Floating Hearts
         setInterval(() => {
             const heart = document.createElement('div');
             heart.classList.add('bg-heart');
@@ -201,7 +216,7 @@
             setTimeout(() => heart.remove(), 6000);
         }, 300);
 
-        // Confetti Function
+        // Confetti
         function startConfetti() {
             const canvas = document.getElementById('confetti-canvas');
             const ctx = canvas.getContext('2d');
