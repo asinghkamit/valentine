@@ -13,7 +13,7 @@
             background-color: #fff0f3;
             font-family: 'Segoe UI', sans-serif;
             margin: 0;
-            overflow: hidden; 
+            overflow: hidden; /* Keeps the page from scrolling when button moves */
         }
         .container {
             text-align: center;
@@ -21,20 +21,18 @@
             padding: 50px;
             border-radius: 30px;
             box-shadow: 0 15px 35px rgba(255, 75, 110, 0.2);
-            width: 400px;
+            width: 450px;
         }
         h1 {
             color: #ff4b6e;
             margin-bottom: 40px;
         }
-        /* This keeps the buttons side-by-side at the start */
         .button-group {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 20px;
-            position: relative; /* Anchor for the absolute "No" button */
-            height: 60px;
+            gap: 30px;
+            height: 80px;
         }
         #yesBtn {
             background-color: #ff4b6e;
@@ -45,7 +43,7 @@
             font-weight: bold;
             border-radius: 50px;
             cursor: pointer;
-            z-index: 2; /* Keeps Yes on top if they overlap later */
+            transition: transform 0.2s;
         }
         #noBtn {
             background-color: #f8f9fa;
@@ -55,8 +53,10 @@
             font-size: 20px;
             border-radius: 50px;
             cursor: pointer;
-            transition: 0.1s ease;
-            position: relative; /* Starts relative so it sits next to Yes */
+            /* This transition makes the 'moving' look smooth instead of a vanish */
+            transition: all 0.3s ease-out;
+            position: relative; 
+            z-index: 999;
         }
     </style>
 </head>
@@ -75,27 +75,31 @@
         const yesBtn = document.getElementById('yesBtn');
 
         function moveButton() {
-            // Change position to absolute only after the first interaction
+            // Switch to absolute so it can move anywhere on the screen
             noBtn.style.position = 'absolute';
-            
-            // Calculate random positions across the whole screen
-            const x = Math.random() * (window.innerWidth - 100);
-            const y = Math.random() * (window.innerHeight - 50);
-            
-            noBtn.style.left = x + 'px';
-            noBtn.style.top = y + 'px';
+
+            // We calculate the screen size minus the button size 
+            // to make sure it NEVER goes off the edge of the screen
+            const maxX = window.innerWidth - noBtn.offsetWidth;
+            const maxY = window.innerHeight - noBtn.offsetHeight;
+
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
+
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
         }
 
-        // Moves when mouse touches it
+        // Moves when she tries to hover over it
         noBtn.addEventListener('mouseover', moveButton);
         
-        // Moves if they somehow manage to click it
+        // Moves if she is fast enough to click it
         noBtn.addEventListener('click', moveButton);
 
         yesBtn.addEventListener('click', () => {
             document.querySelector('.container').innerHTML = `
                 <h1 style="font-size: 3rem;">❤️ Yay! ❤️</h1>
-                <p style="font-size: 1.2rem; color: #555;">I knew you'd say yes, Nirali!</p>
+                <p style="font-size: 1.5rem; color: #555;">I knew you'd say yes, Nirali!</p>
             `;
         });
     </script>
