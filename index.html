@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vandana Be My Valentine?</title>
+    <title>Vandana baby Be My Valentine?</title>
     <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Poppins:wght@600&display=swap" rel="stylesheet">
     <style>
         /* --- RESET --- */
@@ -20,27 +20,20 @@
             overflow: hidden; 
         }
 
-        /* --- BACKGROUND CONTAINER --- */
         #bg-container {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             pointer-events: none;
             z-index: 0;
             overflow: hidden;
         }
 
-        /* --- BACKGROUND FLOATING ITEMS --- */
         .bg-item {
             position: absolute;
-            top: 0; 
-            color: #fff; 
-            opacity: 1; 
+            top: 0; color: #fff; 
             animation-name: floatUp;
             animation-timing-function: linear;
-            animation-iteration-count: 1; 
             z-index: 1;
         }
 
@@ -51,7 +44,6 @@
             100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
         }
 
-        /* --- THE CARD --- */
         .card {
             position: relative;
             width: 90%;
@@ -64,7 +56,6 @@
             text-align: center;
             box-shadow: 0 25px 45px rgba(0,0,0,0.15);
             z-index: 10;
-            transition: height 0.3s ease;
         }
 
         .card img {
@@ -79,7 +70,6 @@
             font-family: 'Indie Flower', cursive;
             font-size: 2.8rem;
             margin-bottom: 10px;
-            line-height: 1.2;
         }
 
         p {
@@ -89,7 +79,6 @@
             font-weight: 500;
         }
 
-        /* --- BUTTONS --- */
         .btn-container {
             display: flex;
             justify-content: center;
@@ -105,43 +94,21 @@
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: 0.2s;
         }
 
-        #yesBtn {
-            background-color: #ff4d6d;
-            color: white;
-        }
-        
-        #yesBtn:hover {
-            transform: scale(1.1);
-            background-color: #e63950;
-            box-shadow: 0 8px 20px rgba(255, 77, 109, 0.3);
-        }
+        #yesBtn { background-color: #ff4d6d; color: white; }
+        #noBtn { background-color: white; color: #ff4d6d; }
 
-        #noBtn {
-            background-color: white;
-            color: #ff4d6d;
-        }
-
-        /* --- SHY TEXT --- */
         .shy-text {
             color: #5d469f;
             font-size: 1rem; 
-            font-weight: 600;  
-            font-style: italic;
             margin-top: 50px; 
-            opacity: 0.8;
+            font-style: italic;
         }
 
-        .move-mode {
-            position: absolute;
-            z-index: 9999; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
+        .move-mode { position: absolute; z-index: 9999; }
         
-        /* --- FIREWORKS CANVAS --- */
         #fireworks {
             position: fixed;
             top: 0; left: 0;
@@ -150,277 +117,155 @@
             z-index: 100;
         }
 
-        /* --- FLOATING TEXT ANIMATION FOR 'NO' --- */
         .float-text {
             position: fixed;
             color: #d6335c;
             font-family: 'Indie Flower', cursive;
-            font-weight: bold;
             font-size: 1.5rem;
             pointer-events: none;
             z-index: 99999;
-            animation: floatUpFade 1s ease-out forwards;
-            text-shadow: 2px 2px 4px rgba(255,255,255,0.8);
-            white-space: nowrap;
+            animation: floatUpFade 1s forwards;
         }
 
         @keyframes floatUpFade {
-            0% { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-60px) scale(1.2); }
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-60px); }
         }
     </style>
 </head>
 <body>
 
-    <!-- AUDIO ELEMENT - Added 'loop' so it keeps playing -->
-    <audio id="loveSong" loop>
-        <!-- Replace with your specific file path or URL -->
-        <source src="I_Wanna_Be_Yours.mp3" type="audio/mpeg">
-    </audio>
+<audio id="loveSong" loop>
+    <source src="I_Wanna_Be_Yours.mp3" type="audio/mpeg">
+</audio>
 
-    <div id="bg-container"></div>
-    <canvas id="fireworks"></canvas>
+<div id="bg-container"></div>
+<canvas id="fireworks"></canvas>
 
-    <div class="card" id="card">
-        <img src="https://giffiles.alphacoders.com/218/218702.gif" alt="Cute Bear">
-        
-        <h1 id="question">Vandana will you be my Valentine?</h1>
-        <p>I promise to buy you momos! 🥟</p>
+<div class="card" id="card">
+    <img id="display-img" src="https://giffiles.alphacoders.com/218/218702.gif" alt="Cute Bear">
+    <h1 id="question">Vandana will you be my Valentine?</h1>
+    <p id="sub-text">I promise to buy you momos! 🥟</p>
 
-        <div class="btn-container">
-            <button id="yesBtn" onclick="sayYes()">Yes</button>
-            <button id="noBtn" onmouseover="handleNo()" ontouchstart="handleNo()" onclick="handleNo()">No</button>
-        </div>
-        
-        <div class="shy-text">"No" seems a bit shy 😈</div>
+    <div id="controls" class="btn-container">
+        <button id="yesBtn" onclick="sayYes()">Yes</button>
+        <button id="noBtn" onmouseover="handleNo()" ontouchstart="handleNo()">No</button>
     </div>
+    <div id="shy-hint" class="shy-text">"No" seems a bit shy 😈</div>
+</div>
 
-    <script>
-        const noBtn = document.getElementById('noBtn');
-        const yesBtn = document.getElementById('yesBtn');
-        const card = document.getElementById('card');
-        const bgContainer = document.getElementById('bg-container');
-        const audio = document.getElementById('loveSong');
+<script>
+    const audio = document.getElementById('loveSong');
+    const card = document.getElementById('card');
+    const noBtn = document.getElementById('noBtn');
+    let fireworksActive = false;
+
+    // --- 1. FIXED MUSIC LOGIC ---
+    // Browsers block audio until a user clicks or moves. This catches everything.
+    function startMusic() {
+        if (audio.paused) {
+            audio.play().catch(() => {});
+        }
+    }
+    ['click', 'touchstart', 'mousemove', 'keydown'].forEach(evt => 
+        document.addEventListener(evt, startMusic, { once: true })
+    );
+
+    // --- 2. NO BUTTON LOGIC ---
+    function handleNo() {
+        startMusic();
+        if (noBtn.parentNode !== document.body) document.body.appendChild(noBtn);
+        noBtn.classList.add('move-mode');
+        noBtn.style.left = Math.random() * (window.innerWidth - 150) + 'px';
+        noBtn.style.top = Math.random() * (window.innerHeight - 50) + 'px';
         
-        let fireworksActive = false;
+        // Spawn floating text
+        const txt = document.createElement('div');
+        txt.className = 'float-text';
+        txt.innerHTML = "Nope! 😈";
+        txt.style.left = event.clientX + 'px';
+        txt.style.top = event.clientY + 'px';
+        document.body.appendChild(txt);
+        setTimeout(() => txt.remove(), 1000);
+    }
 
-        // --- MUSIC LOGIC: START IMMEDIATELY ON ANY INTERACTION ---
-        // This ensures music plays as soon as they touch the screen or move mouse
-        // and keeps playing regardless of what button is clicked later.
-        function attemptPlay() {
-            if(audio.paused) {
-                audio.play().then(() => {
-                    // Remove listeners once playing so we don't spam
-                    document.removeEventListener('click', attemptPlay);
-                    document.removeEventListener('touchstart', attemptPlay);
-                    document.removeEventListener('mousemove', attemptPlay);
-                }).catch(e => {
-                    console.log("Auto-play prevented, waiting for interaction.");
-                });
-            }
+    // --- 3. FIXED YES LOGIC ---
+    function sayYes() {
+        startMusic(); // Ensure music plays
+        
+        // A. IMMEDIATE UPDATE: Change card content right away
+        document.getElementById('controls').remove();
+        document.getElementById('shy-hint').remove();
+        document.getElementById('display-img').src = "https://media.tenor.com/gUiu1zyxfzYAAAAi/bear-kiss-bear-kisses.gif";
+        document.getElementById('question').innerHTML = "YEEEY! ❤️";
+        document.getElementById('sub-text').innerHTML = "I knew you would say yes! See you soon!";
+
+        // B. IMMEDIATE FIREWORKS: Start the animation
+        fireworksActive = true;
+        startFireworks();
+
+        // C. WAIT 5 SECONDS THEN REDIRECT
+        setTimeout(() => {
+            const phoneNumber = "918968492244"; 
+            const message = "Yes! I will be your Valentine babu! 😘😘❤️";
+            window.location.href = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+        }, 5000);
+    }
+
+    // --- 4. FIREWORKS ENGINE ---
+    function startFireworks() {
+        const canvas = document.getElementById('fireworks');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let particles = [];
+
+        function Particle(x, y) {
+            this.x = x; this.y = y;
+            this.radius = Math.random() * 3 + 1;
+            this.color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+            this.velocity = { x: (Math.random() - 0.5) * 10, y: (Math.random() - 0.5) * 10 };
+            this.alpha = 1;
         }
-        // Add listeners to document to catch the FIRST interaction anywhere
-        document.addEventListener('click', attemptPlay);
-        document.addEventListener('touchstart', attemptPlay);
-        document.addEventListener('mousemove', attemptPlay);
-        // Try once on load just in case browser allows it
-        attemptPlay();
-
-
-        // --- RANDOM TEXT PHRASES FOR 'NO' BUTTON ---
-        const phrases = [
-            "Nice try! 😜", "Too slow! 🐢", "Can't catch me! 🏃‍♂️",
-            "You love me! ❤️", "Nope! 😈", "Missed! 😛",
-            "Try again! 😂", "Not today! 🚫"
-        ];
-
-        // 1. RUNAWAY LOGIC + FLOATING TEXT
-        function handleNo() {
-            // Ensure music is playing if they hover 'No' first
-            attemptPlay(); 
-
-            const rect = noBtn.getBoundingClientRect();
-            const x = rect.left + (rect.width / 2);
-            const y = rect.top;
-            spawnFloatingText(x, y);
-            moveButton();
-        }
-
-        function spawnFloatingText(x, y) {
-            const el = document.createElement('div');
-            el.classList.add('float-text');
-            el.innerText = phrases[Math.floor(Math.random() * phrases.length)];
-            const jitterX = (Math.random() * 50) - 25;
-            el.style.left = (x + jitterX) + 'px';
-            el.style.top = y + 'px';
-            document.body.appendChild(el);
-            setTimeout(() => { el.remove(); }, 1000);
-        }
-
-        function moveButton() {
-            if (noBtn.parentNode !== document.body) {
-                document.body.appendChild(noBtn);
-                noBtn.classList.add('move-mode');
-            }
-            const w = window.innerWidth;
-            const h = window.innerHeight;
-            const btnW = noBtn.offsetWidth;
-            const btnH = noBtn.offsetHeight;
-            const randomX = Math.random() * (w - btnW - 40) + 20;
-            const randomY = Math.random() * (h - btnH - 40) + 20;
-            noBtn.style.left = randomX + 'px';
-            noBtn.style.top = randomY + 'px';
+        Particle.prototype.draw = function() {
+            ctx.save(); ctx.globalAlpha = this.alpha;
+            ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
+            ctx.fillStyle = this.color; ctx.fill(); ctx.restore();
         }
 
-        // 2. SUCCESS LOGIC
-        function sayYes() {
-            // Ensure music is playing (if not already), but DO NOT restart it
-            if (audio.paused) {
-                audio.play();
-            }
-
-            // A. Remove Buttons
-            if(noBtn) noBtn.remove();
-            yesBtn.remove();
-            document.querySelector('.shy-text').style.display = 'none';
-
-            // B. Start Fireworks (Shows for 5 seconds)
-            fireworksActive = true;
-            startFireworks();
-
-            // C. Wait 5 Seconds (Fireworks + Old Bear)
-            setTimeout(function() {
-                
-                // Stop creating new fireworks
-                fireworksActive = false;
-                
-                // D. CHANGE CARD CONTENT (To 'YEEY')
-                card.innerHTML = `
-                    <img src="https://media.tenor.com/gUiu1zyxfzYAAAAi/bear-kiss-bear-kisses.gif" alt="Hugging Bears" style="max-width: 300px;">
-                    <h1>YEEEY! ❤️</h1>
-                    <p>I knew you would say yes! See you soon!</p>
-                `;
-
-                // E. Wait 5 MORE seconds (Reading Time)
-                setTimeout(function() {
-                    let phoneNumber = "918968492244"; 
-                    let message = "Yes! I will be your Valentine babu! 😘😘❤️";
-                    // Opens in NEW TAB so music keeps playing in this tab
-                    let url = "https://wa.me/" + phoneNumber + "?text=" + encodeURIComponent(message);
-                    window.open(url, '_blank');
-                }, 5000); 
-
-            }, 5000); 
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((p, i) => {
+                p.velocity.y += 0.05; p.x += p.velocity.x; p.y += p.velocity.y;
+                p.alpha -= 0.01;
+                if (p.alpha <= 0) particles.splice(i, 1); else p.draw();
+            });
         }
+        animate();
 
-        // 3. BACKGROUND HEARTS & STARS
-        function createFloatingElement(isInitial) {
-            const el = document.createElement('div');
-            el.classList.add('bg-item');
-            const shapes = ['❤️', '💫'];
-            el.innerHTML = shapes[Math.floor(Math.random() * shapes.length)];
-            el.style.left = Math.random() * 100 + 'vw';
-            el.style.fontSize = Math.random() * 20 + 15 + 'px'; 
-            const duration = Math.random() * 4 + 5; 
-            el.style.animationDuration = duration + 's';
-
-            if (isInitial) {
-                const randomDelay = -(Math.random() * duration);
-                el.style.animationDelay = randomDelay + 's';
+        setInterval(() => {
+            if (fireworksActive) {
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * (canvas.height * 0.5);
+                for(let i=0; i<40; i++) particles.push(new Particle(x, y));
             }
+        }, 400);
+    }
 
-            bgContainer.appendChild(el);
-            setTimeout(() => { el.remove(); }, duration * 1000); 
-        }
-
-        function initBackground() {
-            for(let i=0; i<35; i++) { createFloatingElement(true); }
-        }
-        initBackground();
-
-        setInterval(() => { createFloatingElement(false); }, 400);
-
-        // 4. FIREWORKS ENGINE
-        function startFireworks() {
-            const canvas = document.getElementById('fireworks');
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            
-            let particles = [];
-
-            function Particle(x, y, color) {
-                this.x = x;
-                this.y = y;
-                this.radius = Math.random() * 3 + 2; 
-                this.color = color;
-                this.velocity = {
-                    x: (Math.random() - 0.5) * 10,
-                    y: (Math.random() - 0.5) * 10
-                };
-                this.alpha = 1;
-                this.friction = 0.96;
-                this.gravity = 0.04;
-            }
-
-            Particle.prototype.draw = function() {
-                ctx.save();
-                ctx.globalAlpha = this.alpha;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-                ctx.fillStyle = this.color;
-                ctx.fill();
-                ctx.restore();
-            }
-
-            Particle.prototype.update = function() {
-                this.velocity.x *= this.friction;
-                this.velocity.y *= this.friction;
-                this.velocity.y += this.gravity;
-                this.x += this.velocity.x;
-                this.y += this.velocity.y;
-                this.alpha -= 0.015;
-            }
-
-            function createExplosion(x, y) {
-                const colors = ['#ff0040', '#ff0080', '#ffeb3b', '#00e5ff', '#ffffff', '#76ff03'];
-                for (let i = 0; i < 80; i++) { 
-                    const color = colors[Math.floor(Math.random() * colors.length)];
-                    particles.push(new Particle(x, y, color));
-                }
-            }
-
-            function animate() {
-                requestAnimationFrame(animate);
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.1)'; 
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                particles.forEach((particle, i) => {
-                    if (particle.alpha > 0) {
-                        particle.update();
-                        particle.draw();
-                    } else {
-                        particles.splice(i, 1);
-                    }
-                });
-            }
-            animate();
-
-            // Fireworks Loop
-            let fireworksInterval = setInterval(() => {
-                if (fireworksActive) {
-                    const x = Math.random() * canvas.width;
-                    const y = Math.random() * (canvas.height * 0.7);
-                    createExplosion(x, y);
-                } else {
-                    clearInterval(fireworksInterval);
-                    setTimeout(() => { ctx.clearRect(0,0,canvas.width, canvas.height); }, 2000);
-                }
-            }, 500);
-
-            // Immediate burst
-            createExplosion(canvas.width / 2, canvas.height / 2);
-        }
-    </script>
+    // Background Hearts
+    setInterval(() => {
+        const el = document.createElement('div');
+        el.className = 'bg-item';
+        el.innerHTML = '❤️';
+        el.style.left = Math.random() * 100 + 'vw';
+        el.style.fontSize = Math.random() * 20 + 10 + 'px';
+        const dur = Math.random() * 3 + 4;
+        el.style.animationDuration = dur + 's';
+        document.getElementById('bg-container').appendChild(el);
+        setTimeout(() => el.remove(), dur * 1000);
+    }, 400);
+</script>
 </body>
 </html>
