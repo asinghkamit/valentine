@@ -23,14 +23,13 @@
         /* --- BACKGROUND FLOATING ITEMS (Hearts & Stars) --- */
         .bg-item {
             position: absolute;
-            color: #fff; /* Falls back to white if not emoji */
-            opacity: 0.6; /* Slightly higher opacity for visibility */
+            color: #fff; 
+            opacity: 0.6; 
             animation: float 6s linear infinite;
             z-index: 0;
             user-select: none;
             pointer-events: none;
         }
-
 
         @keyframes float {
             0% { transform: translateY(100vh) scale(0); opacity: 0; }
@@ -42,15 +41,12 @@
         .card {
             position: relative;
             width: 90%;
-            /* WIDER: Increased to 650px as requested */
             max-width: 650px; 
             
-            /* Premium Glass Effect */
             background: rgba(255, 255, 255, 0.65);
             border: 3px solid rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(15px);
             
-            /* Spacing */
             padding: 50px 40px;
             border-radius: 35px;
             text-align: center;
@@ -61,7 +57,8 @@
 
         .card img {
             width: 100%;
-            max-width: 250px; 
+            /* 👇 I CHANGED THIS FROM 250px TO 450px 👇 */
+            max-width: 450px; 
             border-radius: 15px;
             margin-bottom: 20px;
         }
@@ -117,13 +114,13 @@
             color: #ff4d6d;
         }
 
-        /* --- SHY TEXT (Kept at bottom) --- */
+        /* --- SHY TEXT --- */
         .shy-text {
             color: #5d469f;
             font-size: 1rem; 
             font-weight: 600;  
             font-style: italic;
-            margin-top: 50px; /* Kept the spacing you liked */
+            margin-top: 50px; 
             opacity: 0.8;
         }
 
@@ -154,6 +151,7 @@
 
     <!-- Main Card -->
     <div class="card" id="card">
+        <!-- The GIF will now be bigger because of the CSS change above -->
         <img src="https://giffiles.alphacoders.com/218/218702.gif" alt="Cute Bear">
         
         <h1 id="question">Vandana will you be my Valentine?</h1>
@@ -178,43 +176,49 @@
 
         // 1. RUNAWAY LOGIC
         function moveButton() {
-            // Move button to body so it can fly anywhere
             if (noBtn.parentNode !== document.body) {
                 document.body.appendChild(noBtn);
                 noBtn.classList.add('move-mode');
             }
 
-            // Get Screen Size
             const w = window.innerWidth;
             const h = window.innerHeight;
-            
-            // Get Button Size
             const btnW = noBtn.offsetWidth;
             const btnH = noBtn.offsetHeight;
 
-            // Calculate Random Position (Safe Zone)
             const randomX = Math.random() * (w - btnW - 40) + 20;
             const randomY = Math.random() * (h - btnH - 40) + 20;
 
-            // Apply Position
             noBtn.style.left = randomX + 'px';
             noBtn.style.top = randomY + 'px';
         }
 
-        // 2. SUCCESS LOGIC
+        // 2. SUCCESS LOGIC (Modified for WhatsApp)
         function sayYes() {
-            // Remove the No button
             if(noBtn) noBtn.remove();
 
-            // Update Content
             card.innerHTML = `
                 <img src="https://media.tenor.com/gUiu1zyxfzYAAAAi/bear-kiss-bear-kisses.gif" alt="Hugging Bears" style="max-width: 300px;">
                 <h1>YEEEY! ❤️</h1>
                 <p>I knew you would say yes! See you soon!</p>
             `;
             
-            // Start Confetti
             startConfetti();
+
+            // --- 👇 WHATSAPP NOTIFICATION LOGIC 👇 ---
+            setTimeout(function() {
+                // REPLACE THE NUMBER BELOW WITH YOUR OWN PHONE NUMBER!
+                // Example: If your number is 9876543210 and you are in India, use 919876543210
+                
+                let phoneNumber = "910000000000"; 
+
+                let message = "Yes! I will be your Valentine! ❤️🥟";
+                let url = "https://wa.me/" + phoneNumber + "?text=" + encodeURIComponent(message);
+                
+                // Open WhatsApp
+                window.open(url, '_blank');
+                
+            }, 2000); // 2000 means wait 2 seconds so she sees the confetti first
         }
 
          // 3. BACKGROUND HEARTS & STARS
@@ -222,22 +226,19 @@
             const el = document.createElement('div');
             el.classList.add('bg-item');
             
-            // --- CHANGE HERE: Randomly pick Heart or Star ---
             const shapes = ['❤️', '⭐'];
             const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
             el.innerHTML = randomShape;
 
-            // Random positioning and size
             el.style.left = Math.random() * 100 + 'vw';
-            el.style.fontSize = Math.random() * 20 + 15 + 'px'; // Size between 15px and 35px
-            el.style.animationDuration = Math.random() * 3 + 4 + 's'; // Duration 4s to 7s
+            el.style.fontSize = Math.random() * 20 + 15 + 'px'; 
+            el.style.animationDuration = Math.random() * 3 + 4 + 's'; 
             
             bgContainer.appendChild(el);
             
-            setTimeout(() => el.remove(), 7000); // Clean up
+            setTimeout(() => el.remove(), 7000); 
         }
         
-        // Run this every 300 milliseconds
         setInterval(createFloatingElement, 300);
 
         // 4. CONFETTI EFFECT
