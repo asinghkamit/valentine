@@ -1,132 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For Vandana</title>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #fff0f3;
-            font-family: 'Segoe UI', sans-serif;
-            margin: 0;
-            overflow: hidden; 
-        }
-        .container {
-           text-align: center;
-    background: white;
-    /* Adjusted padding: less top/bottom, balanced sides */
-    padding: 50px 40px; 
-    border-radius: 30px;
-    box-shadow: 0 15px 45px rgba(255, 75, 110, 0.15);
-    
-    /* Using max-width instead of fixed width for a better 'box' feel */
-    width: 90%;
-    max-width: 550px; 
-    
-    position: relative;
-    transition: transform 0.3s ease;
-        }
-        .header-image {
-            width: 180px; /* Slightly larger to fill the width better */
-    height: auto;
-    margin-bottom: 20px;
-    border-radius: 15px;
-  }
-        }
-        h1 {
-            color: #e94d67; 
-            font-size: 2.5rem; /* Larger text for the larger box */
-            margin-bottom: 50px;
-            font-weight: bold;
-            display: block !important;
-        }
-        .button-group {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 40px; /* More space between buttons */
-            height: 60px;
-            margin-bottom: 40px;
-        }
-        #yesBtn {
-            background-color: #e94d67;
-            color: white;
-            border: none;
-            padding: 10px 35px; /* Bigger button */
-            font-size: 22px;
-            font-weight: bold;
-            border-radius: 20px; 
-            cursor: pointer;
-        }
-        #noBtn {
-            background-color: #f1f1f1;
-            color: #757575;
-            border: none;
-            padding: 10px 35px; /* Bigger No button */
-            font-size: 18px;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.2s ease-out;
-            position: relative; 
-            z-index: 999;
-        }
-        .shy-text {
-            color: #5d469f;
-            font-size: 16px; /* Slightly larger text */
-            margin-top: 20px;
-        }
-        .big-image {
-            width: 85%;
-            border-radius: 20px;
-            margin-top: 20px;
-        }
-    </style>
-</head>
-<body>
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #fff0f3;
+        font-family: 'Segoe UI', sans-serif;
+        margin: 0;
+        overflow: hidden; 
+    }
 
-    <div class="container">
-        <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExY2ZiY2l1bm1iazMxOWo2ZmY4cXhmMnh3aHg2b3Y4bmQwd3prYXZ3cCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/wzWxTUiXRQDYc/giphy.gif" class="header-image">
-        
-        <h1  style="color: #e91e63;">vandana will you be my valentine?</h1>
-        
-        <div class="button-group">
-            <button id="yesBtn">Yes</button>
-            <button id="noBtn">No</button>
-        </div>
+    .container {
+        text-align: center;
+        background: white;
+        /* Balanced padding to prevent the 'long' look */
+        padding: 40px; 
+        border-radius: 40px;
+        box-shadow: 0 15px 45px rgba(255, 75, 110, 0.2);
+        width: 500px; /* Locked width */
+        max-width: 90vw;
+    }
 
-        <div class="shy-text">"No" seems a bit shy 😈</div>
+    .header-image {
+        width: 200px;
+        height: auto;
+        margin-bottom: 20px;
+        border-radius: 15px;
+    }
+
+    h1 {
+        /* This !important tag forces the color change */
+        color: #e94d67 !important; 
+        font-size: 2.2rem !important;
+        margin-bottom: 30px;
+        font-weight: bold;
+        display: block !important;
+    }
+
+    .button-group {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .btn {
+        padding: 12px 25px;
+        border-radius: 50px;
+        border: none;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .yes-btn { background-color: #e94d67; color: white; }
+    .no-btn { background-color: #ffb3c1; color: white; }
+</style>
+
+<div class="container">
+    <img src="YOUR_IMAGE_URL" class="header-image">
+    <h1>vandana will you be my valentine?</h1>
+    <div class="button-group">
+        <button class="btn yes-btn">Yes</button>
+        <button class="btn no-btn">No</button>
     </div>
-
-    <script>
-        const noBtn = document.getElementById('noBtn');
-        const yesBtn = document.getElementById('yesBtn');
-
-        function moveButton() {
-            noBtn.style.position = 'fixed';
-
-            const maxX = window.innerWidth - noBtn.offsetWidth - 20;
-            const maxY = window.innerHeight - noBtn.offsetHeight - 20;
-
-            const randomX = Math.max(20, Math.floor(Math.random() * maxX));
-            const randomY = Math.max(20, Math.floor(Math.random() * maxY));
-
-            noBtn.style.left = randomX + 'px';
-            noBtn.style.top = randomY + 'px';
-        }
-
-        noBtn.addEventListener('mouseover', moveButton);
-        noBtn.addEventListener('click', moveButton);
-
-        yesBtn.addEventListener('click', () => {
-            document.querySelector('.container').innerHTML = `
-                <h1 style="color: #e91e63;">Yay! See you on the 14th! ❤️</h1>
-<img src="https://giffiles.alphacoders.com/218/218702.gif" class="big-image">
-            `;
-        });
-    </script>
-</body>
-</html>
+</div>
