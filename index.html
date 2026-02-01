@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Be gg My Valentine?</title>
+<title>Be tit My Valentine?</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Poppins:wght@600&display=swap" rel="stylesheet">
 
@@ -12,6 +12,7 @@
 
 body{
 height:100vh;
+width:100vw;
 display:flex;
 justify-content:center;
 align-items:center;
@@ -20,41 +21,30 @@ background:linear-gradient(135deg,#ff9a9e,#fecfef);
 overflow:hidden;
 }
 
-/* floating names */
-.nameFloat{
-position:fixed;
-color:white;
-font-size:22px;
-opacity:.25;
-animation:floatUp linear forwards;
-pointer-events:none;
-}
-
-@keyframes floatUp{
-from{transform:translateY(110vh)}
-to{transform:translateY(-10vh)}
-}
+/* CARD */
 
 .card{
+position:relative;
 width:92%;
 max-width:650px;
-background:rgba(255,255,255,0.75);
-padding:40px;
+background:rgba(255,255,255,0.65);
+backdrop-filter:blur(15px);
+padding:45px;
 border-radius:30px;
 text-align:center;
 z-index:10;
-box-shadow:0 20px 40px rgba(0,0,0,.15);
+box-shadow:0 25px 45px rgba(0,0,0,.15);
 }
 
 .card img{
-max-width:360px;
+max-width:380px;
 border-radius:15px;
 margin-bottom:15px;
 }
 
 h1{
 font-family:'Indie Flower';
-font-size:2.6rem;
+font-size:2.7rem;
 color:#d6335c;
 }
 
@@ -67,27 +57,50 @@ justify-content:center;
 }
 
 button{
-padding:14px 30px;
+padding:15px 34px;
 border:none;
-border-radius:40px;
-font-size:1.1rem;
+border-radius:50px;
+font-size:1.15rem;
+font-weight:700;
 cursor:pointer;
-transition:.2s;
 }
 
 #yesBtn{background:#ff4d6d;color:white}
-#yesBtn:hover{transform:scale(1.1)}
-
 #noBtn{background:white;color:#ff4d6d}
 
-canvas{
+.move-mode{
+position:absolute;
+z-index:9999;
+}
+
+/* FLOAT TEXT */
+
+.float-text{
+position:fixed;
+font-family:'Indie Flower';
+font-size:1.6rem;
+font-weight:bold;
+color:#d6335c;
+pointer-events:none;
+animation:floatUpFade 1s ease-out forwards;
+z-index:99999;
+}
+
+@keyframes floatUpFade{
+0%{opacity:1;transform:translateY(0)}
+100%{opacity:0;transform:translateY(-60px)}
+}
+
+/* FIREWORK CANVAS */
+
+#fireworks{
 position:fixed;
 top:0;
 left:0;
 width:100%;
 height:100%;
-pointer-events:none;
 z-index:5;
+pointer-events:none;
 }
 </style>
 </head>
@@ -98,7 +111,7 @@ z-index:5;
 <source src="I_Wanna_Be_Yours.mp3" type="audio/mpeg">
 </audio>
 
-<canvas id="fx"></canvas>
+<canvas id="fireworks"></canvas>
 
 <div class="card" id="card">
 <img src="https://giffiles.alphacoders.com/218/218702.gif">
@@ -107,138 +120,153 @@ z-index:5;
 
 <div class="btn-container">
 <button id="yesBtn" onclick="sayYes()">Yes</button>
-<button id="noBtn" onmouseover="moveNo()">No</button>
+<button id="noBtn" onmouseover="handleNo()" ontouchstart="handleNo()">No</button>
 </div>
 </div>
 
 <script>
-/* ---------- MUSIC FADE IN AUTOPLAY ---------- */
+/* -------- MUSIC AUTOPLAY -------- */
 
 const audio=document.getElementById("loveSong");
 
-function fadeIn(){
+function attemptPlay(){
 audio.muted=false;
-audio.volume=0;
 audio.play().catch(()=>{});
-let v=0;
-let fade=setInterval(()=>{
-v+=0.05;
-audio.volume=Math.min(v,1);
-if(v>=1) clearInterval(fade);
-},200);
 }
 
 window.addEventListener("load",()=>{
-audio.play().then(fadeIn).catch(()=>{});
+audio.play().then(()=>audio.muted=false).catch(()=>{});
 });
 
-document.addEventListener("click",fadeIn,{once:true});
-document.addEventListener("touchstart",fadeIn,{once:true});
+document.addEventListener("click",attemptPlay,{once:true});
+document.addEventListener("touchstart",attemptPlay,{once:true});
 
-/* ---------- FLOATING NAMES ---------- */
+/* -------- NO BUTTON PHRASES -------- */
 
-function floatNames(){
-let el=document.createElement("div");
-el.className="nameFloat";
-el.innerText="Vandana ❤️";
-el.style.left=Math.random()*100+"vw";
-el.style.animationDuration=(6+Math.random()*6)+"s";
-document.body.appendChild(el);
-setTimeout(()=>el.remove(),12000);
-}
-setInterval(floatNames,800);
-
-/* ---------- RUNAWAY NO BUTTON ---------- */
+const phrases=[
+"Nice try! 😜","Too slow! 🐢","Can't catch me! 🏃‍♂️",
+"You love me! ❤️","Nope! 😈","Missed! 😛",
+"Try again! 😂","Not today! 🚫"
+];
 
 const noBtn=document.getElementById("noBtn");
 
-function moveNo(){
-let x=Math.random()*(innerWidth-120);
-let y=Math.random()*(innerHeight-60);
-noBtn.style.position="absolute";
-noBtn.style.left=x+"px";
-noBtn.style.top=y+"px";
+function handleNo(){
+attemptPlay();
+
+const rect=noBtn.getBoundingClientRect();
+spawnFloatingText(rect.left+rect.width/2,rect.top);
+moveButton();
 }
 
-/* ---------- HEART + CONFETTI ENGINE ---------- */
+function spawnFloatingText(x,y){
+const el=document.createElement("div");
+el.className="float-text";
+el.innerText=phrases[Math.floor(Math.random()*phrases.length)];
+el.style.left=x+"px";
+el.style.top=y+"px";
+document.body.appendChild(el);
+setTimeout(()=>el.remove(),1000);
+}
 
-const canvas=document.getElementById("fx");
+function moveButton(){
+if(noBtn.parentNode!==document.body){
+document.body.appendChild(noBtn);
+noBtn.classList.add("move-mode");
+}
+noBtn.style.left=Math.random()*(innerWidth-120)+"px";
+noBtn.style.top=Math.random()*(innerHeight-60)+"px";
+}
+
+/* -------- FIREWORK ENGINE (BRIGHT DIWALI STYLE) -------- */
+
+const canvas=document.getElementById("fireworks");
 const ctx=canvas.getContext("2d");
 canvas.width=innerWidth;
 canvas.height=innerHeight;
 
-let parts=[];
+let fireworksActive=false;
+let particles=[];
 
-function Part(x,y,type){
-this.x=x; this.y=y;
-this.vx=(Math.random()-.5)*8;
-this.vy=(Math.random()-.5)*8;
-this.alpha=1;
-this.type=type;
-this.size=6+Math.random()*6;
+function Particle(x,y,color){
+this.x=x;
+this.y=y;
+this.vx=(Math.random()-0.5)*12;
+this.vy=(Math.random()-0.5)*12;
+this.life=1;
+this.color=color;
+this.size=2+Math.random()*2;
 }
 
-Part.prototype.draw=function(){
-ctx.globalAlpha=this.alpha;
-
-if(this.type==="heart"){
-ctx.fillStyle="red";
+Particle.prototype.draw=function(){
+ctx.globalAlpha=this.life;
+ctx.fillStyle=this.color;
 ctx.beginPath();
-ctx.moveTo(this.x,this.y);
-ctx.bezierCurveTo(this.x-5,this.y-5,this.x-10,this.y+5,this.x,this.y+10);
-ctx.bezierCurveTo(this.x+10,this.y+5,this.x+5,this.y-5,this.x,this.y);
+ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
 ctx.fill();
-}else{
-ctx.fillStyle=`hsl(${Math.random()*360},100%,60%)`;
-ctx.fillRect(this.x,this.y,this.size,this.size);
-}
-
 ctx.globalAlpha=1;
 }
 
-Part.prototype.update=function(){
+Particle.prototype.update=function(){
 this.x+=this.vx;
 this.y+=this.vy;
-this.vy+=.15;
-this.alpha-=.02;
+this.vy+=0.08;
+this.vx*=0.98;
+this.life-=0.015;
 }
 
-function burst(){
-for(let i=0;i<80;i++){
-parts.push(new Part(canvas.width/2,canvas.height/2,"heart"));
-parts.push(new Part(canvas.width/2,canvas.height/2,"conf"));
+function explode(x,y){
+const colors=["#ff0040","#ffae00","#00e5ff","#ffffff","#76ff03","#ff00ff"];
+for(let i=0;i<120;i++){
+particles.push(new Particle(x,y,colors[Math.floor(Math.random()*colors.length)]));
 }
 }
 
-function anim(){
-requestAnimationFrame(anim);
-ctx.clearRect(0,0,canvas.width,canvas.height);
-parts.forEach((p,i)=>{
-p.update(); p.draw();
-if(p.alpha<=0) parts.splice(i,1);
+function animate(){
+requestAnimationFrame(animate);
+ctx.fillStyle="rgba(0,0,0,0.15)";
+ctx.fillRect(0,0,canvas.width,canvas.height);
+
+particles.forEach((p,i)=>{
+p.update();
+p.draw();
+if(p.life<=0) particles.splice(i,1);
 });
 }
-anim();
+animate();
 
-/* ---------- YES FLOW ---------- */
+/* -------- YES FLOW -------- */
 
 function sayYes(){
 
-fadeIn();
+attemptPlay();
 
 document.getElementById("yesBtn").remove();
 document.getElementById("noBtn").remove();
 
-let interval=setInterval(burst,350);
+fireworksActive=true;
+
+let fw=setInterval(()=>{
+if(fireworksActive){
+explode(Math.random()*canvas.width,Math.random()*canvas.height*0.7);
+}
+},400);
+
+explode(canvas.width/2,canvas.height/2);
+
+/* after 5 sec show message */
 
 setTimeout(()=>{
-clearInterval(interval);
+fireworksActive=false;
+clearInterval(fw);
 
 document.getElementById("card").innerHTML=`
 <img src="https://media.tenor.com/gUiu1zyxfzYAAAAi/bear-kiss-bear-kisses.gif">
 <h1>YEEEY! ❤️</h1>
 <p>I knew you would say yes! See you soon!</p>
 `;
+
+/* stay 5 sec then whatsapp */
 
 setTimeout(()=>{
 window.location.href=
