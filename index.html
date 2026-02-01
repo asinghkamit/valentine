@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bbabuee My Valentine?</title>
+<title>Be gg My Valentine?</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Poppins:wght@600&display=swap" rel="stylesheet">
 
@@ -20,18 +20,34 @@ background:linear-gradient(135deg,#ff9a9e,#fecfef);
 overflow:hidden;
 }
 
+/* floating names */
+.nameFloat{
+position:fixed;
+color:white;
+font-size:22px;
+opacity:.25;
+animation:floatUp linear forwards;
+pointer-events:none;
+}
+
+@keyframes floatUp{
+from{transform:translateY(110vh)}
+to{transform:translateY(-10vh)}
+}
+
 .card{
-width:90%;
+width:92%;
 max-width:650px;
-background:rgba(255,255,255,0.7);
+background:rgba(255,255,255,0.75);
 padding:40px;
 border-radius:30px;
 text-align:center;
 z-index:10;
+box-shadow:0 20px 40px rgba(0,0,0,.15);
 }
 
 .card img{
-max-width:350px;
+max-width:360px;
 border-radius:15px;
 margin-bottom:15px;
 }
@@ -56,9 +72,12 @@ border:none;
 border-radius:40px;
 font-size:1.1rem;
 cursor:pointer;
+transition:.2s;
 }
 
 #yesBtn{background:#ff4d6d;color:white}
+#yesBtn:hover{transform:scale(1.1)}
+
 #noBtn{background:white;color:#ff4d6d}
 
 canvas{
@@ -75,12 +94,11 @@ z-index:5;
 
 <body>
 
-<!-- AUTOPLAY TRICK AUDIO -->
 <audio id="loveSong" autoplay muted loop playsinline>
 <source src="I_Wanna_Be_Yours.mp3" type="audio/mpeg">
 </audio>
 
-<canvas id="hearts"></canvas>
+<canvas id="fx"></canvas>
 
 <div class="card" id="card">
 <img src="https://giffiles.alphacoders.com/218/218702.gif">
@@ -94,102 +112,127 @@ z-index:5;
 </div>
 
 <script>
-/* ---------------- MUSIC AUTOPLAY BEST TRICK ---------------- */
+/* ---------- MUSIC FADE IN AUTOPLAY ---------- */
 
-const audio = document.getElementById("loveSong");
+const audio=document.getElementById("loveSong");
 
-function forcePlay(){
+function fadeIn(){
 audio.muted=false;
+audio.volume=0;
 audio.play().catch(()=>{});
+let v=0;
+let fade=setInterval(()=>{
+v+=0.05;
+audio.volume=Math.min(v,1);
+if(v>=1) clearInterval(fade);
+},200);
 }
 
 window.addEventListener("load",()=>{
-audio.play().then(()=>{audio.muted=false}).catch(()=>{});
+audio.play().then(fadeIn).catch(()=>{});
 });
 
-document.addEventListener("click", forcePlay, {once:true});
-document.addEventListener("touchstart", forcePlay, {once:true});
+document.addEventListener("click",fadeIn,{once:true});
+document.addEventListener("touchstart",fadeIn,{once:true});
 
-/* ---------------- RUNAWAY NO BUTTON ---------------- */
+/* ---------- FLOATING NAMES ---------- */
+
+function floatNames(){
+let el=document.createElement("div");
+el.className="nameFloat";
+el.innerText="Vandana ❤️";
+el.style.left=Math.random()*100+"vw";
+el.style.animationDuration=(6+Math.random()*6)+"s";
+document.body.appendChild(el);
+setTimeout(()=>el.remove(),12000);
+}
+setInterval(floatNames,800);
+
+/* ---------- RUNAWAY NO BUTTON ---------- */
 
 const noBtn=document.getElementById("noBtn");
 
 function moveNo(){
-const x=Math.random()*(window.innerWidth-100);
-const y=Math.random()*(window.innerHeight-50);
+let x=Math.random()*(innerWidth-120);
+let y=Math.random()*(innerHeight-60);
 noBtn.style.position="absolute";
 noBtn.style.left=x+"px";
 noBtn.style.top=y+"px";
 }
 
-/* ---------------- HEART BURST ENGINE ---------------- */
+/* ---------- HEART + CONFETTI ENGINE ---------- */
 
-const canvas=document.getElementById("hearts");
+const canvas=document.getElementById("fx");
 const ctx=canvas.getContext("2d");
 canvas.width=innerWidth;
 canvas.height=innerHeight;
 
-let hearts=[];
-let heartMode=false;
+let parts=[];
 
-function Heart(x,y){
-this.x=x;
-this.y=y;
-this.size=10+Math.random()*10;
-this.vx=(Math.random()-0.5)*6;
-this.vy=(Math.random()-0.5)*6;
+function Part(x,y,type){
+this.x=x; this.y=y;
+this.vx=(Math.random()-.5)*8;
+this.vy=(Math.random()-.5)*8;
 this.alpha=1;
+this.type=type;
+this.size=6+Math.random()*6;
 }
 
-Heart.prototype.draw=function(){
+Part.prototype.draw=function(){
 ctx.globalAlpha=this.alpha;
+
+if(this.type==="heart"){
 ctx.fillStyle="red";
 ctx.beginPath();
 ctx.moveTo(this.x,this.y);
 ctx.bezierCurveTo(this.x-5,this.y-5,this.x-10,this.y+5,this.x,this.y+10);
 ctx.bezierCurveTo(this.x+10,this.y+5,this.x+5,this.y-5,this.x,this.y);
 ctx.fill();
+}else{
+ctx.fillStyle=`hsl(${Math.random()*360},100%,60%)`;
+ctx.fillRect(this.x,this.y,this.size,this.size);
+}
+
 ctx.globalAlpha=1;
 }
 
-Heart.prototype.update=function(){
+Part.prototype.update=function(){
 this.x+=this.vx;
 this.y+=this.vy;
-this.alpha-=0.02;
+this.vy+=.15;
+this.alpha-=.02;
 }
 
-function burstHearts(){
-for(let i=0;i<40;i++){
-hearts.push(new Heart(canvas.width/2,canvas.height/2));
+function burst(){
+for(let i=0;i<80;i++){
+parts.push(new Part(canvas.width/2,canvas.height/2,"heart"));
+parts.push(new Part(canvas.width/2,canvas.height/2,"conf"));
 }
 }
 
-function animateHearts(){
-requestAnimationFrame(animateHearts);
+function anim(){
+requestAnimationFrame(anim);
 ctx.clearRect(0,0,canvas.width,canvas.height);
-
-hearts.forEach((h,i)=>{
-h.update();
-h.draw();
-if(h.alpha<=0) hearts.splice(i,1);
+parts.forEach((p,i)=>{
+p.update(); p.draw();
+if(p.alpha<=0) parts.splice(i,1);
 });
 }
-animateHearts();
+anim();
 
-/* ---------------- YES FLOW FIXED ---------------- */
+/* ---------- YES FLOW ---------- */
 
 function sayYes(){
 
-forcePlay();
+fadeIn();
 
 document.getElementById("yesBtn").remove();
 document.getElementById("noBtn").remove();
 
-heartMode=true;
-let heartInterval=setInterval(burstHearts,400);
+let interval=setInterval(burst,350);
 
 setTimeout(()=>{
-clearInterval(heartInterval);
+clearInterval(interval);
 
 document.getElementById("card").innerHTML=`
 <img src="https://media.tenor.com/gUiu1zyxfzYAAAAi/bear-kiss-bear-kisses.gif">
@@ -198,8 +241,9 @@ document.getElementById("card").innerHTML=`
 `;
 
 setTimeout(()=>{
-let url="https://wa.me/918968492244?text="+encodeURIComponent("Yes! I will be your Valentine babu! 😘❤️");
-window.location.href=url;
+window.location.href=
+"https://wa.me/918968492244?text="+
+encodeURIComponent("Yes! I will be your Valentine babu! 😘❤️");
 },5000);
 
 },5000);
