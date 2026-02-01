@@ -20,7 +20,7 @@
             overflow: hidden; 
         }
 
-        /* --- BACKGROUND CONTAINER (Fixes height issue) --- */
+        /* --- BACKGROUND CONTAINER --- */
         #bg-container {
             position: fixed;
             top: 0;
@@ -29,23 +29,27 @@
             height: 100%;
             pointer-events: none;
             z-index: 0;
+            overflow: hidden;
         }
 
-        /* --- BACKGROUND FLOATING ITEMS (Hearts & Stars) --- */
+        /* --- BACKGROUND FLOATING ITEMS --- */
         .bg-item {
             position: absolute;
+            top: 0; /* Starts at top, moved down by transform */
             color: #fff; 
             opacity: 1; 
-            animation: float 6s linear infinite; /* Default speed, JS overrides */
+            /* Animation defined here, but duration/delay set in JS */
+            animation-name: floatUp;
+            animation-timing-function: linear;
+            animation-iteration-count: 1; /* Run once then remove */
             z-index: 1;
         }
 
-        /* 👇 FIXED ANIMATION: Goes all the way to top before fading */
-        @keyframes float {
-            0% { transform: translateY(105vh) scale(0); opacity: 0; }
-            10% { opacity: 1; } /* Becomes visible quickly */
-            90% { opacity: 1; } /* Stays visible almost to the very top */
-            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; } /* Fades out ABOVE screen */
+        @keyframes floatUp {
+            0% { transform: translateY(110vh) scale(0.5); opacity: 0; }
+            10% { opacity: 0.8; }
+            90% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
         }
 
         /* --- THE CARD --- */
@@ -134,7 +138,6 @@
             opacity: 0.8;
         }
 
-        /* Class for the running button */
         .move-mode {
             position: absolute;
             z-index: 9999; 
@@ -144,10 +147,8 @@
         /* --- CONFETTI --- */
         #confetti {
             position: fixed;
-            top: 0; 
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             pointer-events: none;
             z-index: 100;
         }
@@ -155,11 +156,9 @@
 </head>
 <body>
 
-    <!-- Background -->
     <div id="bg-container"></div>
     <canvas id="confetti"></canvas>
 
-    <!-- Main Card -->
     <div class="card" id="card">
         <img src="https://giffiles.alphacoders.com/218/218702.gif" alt="Cute Bear">
         
@@ -175,8 +174,6 @@
     </div>
 
     <script>
-        // --- LOGIC ---
-
         const noBtn = document.getElementById('noBtn');
         const yesBtn = document.getElementById('yesBtn');
         const card = document.getElementById('card');
@@ -188,20 +185,17 @@
                 document.body.appendChild(noBtn);
                 noBtn.classList.add('move-mode');
             }
-
             const w = window.innerWidth;
             const h = window.innerHeight;
             const btnW = noBtn.offsetWidth;
             const btnH = noBtn.offsetHeight;
-
             const randomX = Math.random() * (w - btnW - 40) + 20;
             const randomY = Math.random() * (h - btnH - 40) + 20;
-
             noBtn.style.left = randomX + 'px';
             noBtn.style.top = randomY + 'px';
         }
 
-        // 2. SUCCESS LOGIC
+        // 2. SUCCESS LOGIC & WHATSAPP
         function sayYes() {
             if(noBtn) noBtn.remove();
 
@@ -210,12 +204,93 @@
                 <h1>YEEEY! ❤️</h1>
                 <p>I knew you would say yes! See you soon!</p>
             `;
-            
             startConfetti();
 
             setTimeout(function() {
-                // YOUR WHATSAPP NUMBER
                 let phoneNumber = "918968492244"; 
-
                 let message = "Yes! I will be your Valentine babu! 😘😘❤️";
                 let url = "https://wa.me/" + phoneNumber + "?text=" + encodeURIComponent(message);
+                window.open(url, '_blank');
+            }, 2000); 
+        }
+
+        // 3. BACKGROUND HEARTS & STARS (FIXED)
+        function createFloatingElement(isInitial) {
+            const el = document.createElement('div');
+            el.classList.add('bg-item');
+            
+            const shapes = ['❤️', '⭐'];
+            el.innerHTML = shapes[Math.floor(Math.random() * shapes.length)];
+
+            // Random Position X
+            el.style.left = Math.random() * 100 + 'vw';
+            // Random Size
+            el.style.fontSize = Math.random() * 20 + 15 + 'px'; 
+
+            // CALCULATE DURATION (Speed) - 5s to 9s
+            const duration = Math.random() * 4 + 5; 
+            el.style.animationDuration = duration + 's';
+
+            // IF INITIAL: Start animation in the middle (negative delay)
+            if (isInitial) {
+                const randomDelay = -(Math.random() * duration);
+                el.style.animationDelay = randomDelay + 's';
+            }
+
+            bgContainer.appendChild(el);
+            
+            // REMOVE after exact duration (converted to ms)
+            // Added 100ms buffer to be safe
+            setTimeout(() => {
+                el.remove();
+            }, duration * 1000); 
+        }
+
+        // 3a. FILL SCREEN IMMEDIATELY
+        function initBackground() {
+            for(let i=0; i<35; i++) {
+                createFloatingElement(true); // true means "start in middle"
+            }
+        }
+        initBackground();
+
+        // 3b. ADD NEW ONES CONTINUOUSLY
+        setInterval(() => {
+            createFloatingElement(false); // false means "start at bottom"
+        }, 400);
+
+        // 4. CONFETTI
+        function startConfetti() {
+            const canvas = document.getElementById('confetti');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const particles = [];
+            
+            for(let i=0; i<300; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    dx: Math.random() * 4 - 2,
+                    dy: Math.random() * 5 + 2,
+                    color: `hsl(${Math.random() * 360}, 100%, 50%)`
+                });
+            }
+
+            function draw() {
+                ctx.clearRect(0,0,canvas.width,canvas.height);
+                particles.forEach(p => {
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
+                    ctx.fill();
+                    p.y += p.dy;
+                    p.x += p.dx;
+                });
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+    </script>
+</body>
+</html>
