@@ -113,11 +113,16 @@
             color: #ff4d6d;
         }
 
+        /* --- CHANGED SECTION ONLY --- */
         .shy-text {
             color: #5d469f;
-            font-size: 16px; /* Slightly larger text */
-            margin-top: 20px;
+            font-size: 1.1rem; /* Slightly larger to look good */
+            font-weight: 600;  /* Bolder */
+            font-style: italic; /* Cute italic style */
+            margin-top: 60px;   /* MOVED DOWN: Increased from 20px to 60px */
+            opacity: 0.8;
         }
+        /* --------------------------- */
 
         /* Class for the running button */
         .move-mode {
@@ -155,7 +160,9 @@
             <button id="yesBtn" onclick="sayYes()">Yes</button>
             <button id="noBtn" onmouseover="moveButton()" ontouchstart="moveButton()">No</button>
         </div>
-                <div class="shy-text">"No" seems a bit shy 😈</div>
+        
+        <!-- The Text -->
+        <div class="shy-text">"No" seems a bit shy 😈</div>
     </div>
 
     <script>
