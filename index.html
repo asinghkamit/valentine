@@ -20,24 +20,32 @@
             overflow: hidden; 
         }
 
+        /* --- BACKGROUND CONTAINER (Fixes height issue) --- */
+        #bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
         /* --- BACKGROUND FLOATING ITEMS (Hearts & Stars) --- */
         .bg-item {
             position: absolute;
             color: #fff; 
-            opacity: 1; /* Fixed opacity */
-            /* Default animation, JS will override speed */
-            animation: float linear infinite; 
-            z-index: 0;
-            user-select: none;
-            pointer-events: none;
+            opacity: 1; 
+            animation: float 6s linear infinite; /* Default speed, JS overrides */
+            z-index: 1;
         }
 
-        /* 👇 FIXED ANIMATION: Stays visible until the very top */
+        /* 👇 FIXED ANIMATION: Goes all the way to top before fading */
         @keyframes float {
-            0% { transform: translateY(100vh) scale(0); opacity: 0; }
-            10% { opacity: 1; } /* Fade in quickly at bottom */
-            90% { opacity: 1; } /* Stay visible until almost the top */
-            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; } /* Fade out right at the end */
+            0% { transform: translateY(105vh) scale(0); opacity: 0; }
+            10% { opacity: 1; } /* Becomes visible quickly */
+            90% { opacity: 1; } /* Stays visible almost to the very top */
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; } /* Fades out ABOVE screen */
         }
 
         /* --- THE CARD --- */
@@ -211,69 +219,3 @@
 
                 let message = "Yes! I will be your Valentine babu! 😘😘❤️";
                 let url = "https://wa.me/" + phoneNumber + "?text=" + encodeURIComponent(message);
-                
-                window.open(url, '_blank');
-                
-            }, 6000); 
-        }
-
-         // 3. BACKGROUND HEARTS & STARS
-        function createFloatingElement() {
-            const el = document.createElement('div');
-            el.classList.add('bg-item');
-            
-            const shapes = ['❤️', '💫'];
-            const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
-            el.innerHTML = randomShape;
-
-            el.style.left = Math.random() * 100 + 'vw';
-            el.style.fontSize = Math.random() * 20 + 15 + 'px'; 
-            
-            // 👇 FIXED TIME: Takes 10 to 15 seconds to float (Slower & Smoother)
-            const duration = Math.random() * 5 + 10; 
-            el.style.animationDuration = duration + 's'; 
-            
-            bgContainer.appendChild(el);
-            
-            // 👇 FIXED TIMEOUT: Wait 15 seconds before deleting so it reaches top
-            setTimeout(() => el.remove(), 20000); 
-        }
-        
-        setInterval(createFloatingElement, 300);
-
-        // 4. CONFETTI EFFECT
-        function startConfetti() {
-            const canvas = document.getElementById('confetti');
-            const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-
-            const particles = [];
-            
-            for(let i=0; i<300; i++) {
-                particles.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height - canvas.height,
-                    dx: Math.random() * 4 - 2,
-                    dy: Math.random() * 5 + 2,
-                    color: `hsl(${Math.random() * 360}, 100%, 50%)`
-                });
-            }
-
-            function draw() {
-                ctx.clearRect(0,0,canvas.width,canvas.height);
-                particles.forEach(p => {
-                    ctx.fillStyle = p.color;
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
-                    ctx.fill();
-                    p.y += p.dy;
-                    p.x += p.dx;
-                });
-                requestAnimationFrame(draw);
-            }
-            draw();
-        }
-    </script>
-</body>
-</html>
