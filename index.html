@@ -35,29 +35,30 @@
             100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
         }
 
-        /* --- THE CARD (Updated for Perfect Shape) --- */
+        /* --- THE CARD --- */
         .card {
             position: relative;
             width: 90%;
-            max-width: 600px; /* Made wider (was 400px) */
+            /* REVERTED: Changed from 600px back to 500px so it's not too big */
+            max-width: 500px; 
             
             /* Premium Glass Effect */
             background: rgba(255, 255, 255, 0.65);
-            border: 3px solid rgba(255, 255, 255, 0.9); /* Cute thick border */
-            backdrop-filter: blur(15px); /* Smoother blur */
+            border: 3px solid rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(15px);
             
-            /* Spacing & Shape */
-            padding: 50px 40px;
-            border-radius: 35px; /* Softer, rounder corners */
+            /* Spacing */
+            padding: 40px; /* Balanced padding */
+            border-radius: 35px;
             text-align: center;
-            box-shadow: 0 25px 45px rgba(0,0,0,0.15); /* Deeper shadow */
+            box-shadow: 0 25px 45px rgba(0,0,0,0.15);
             
             z-index: 10;
         }
 
         .card img {
             width: 100%;
-            max-width: 280px; /* Slightly larger image to fit the wider card */
+            max-width: 250px; /* Slightly adjusted to fit perfectly */
             border-radius: 15px;
             margin-bottom: 20px;
         }
@@ -65,14 +66,14 @@
         h1 {
             color: #d6335c;
             font-family: 'Indie Flower', cursive;
-            font-size: 3rem; /* Slightly bigger text */
-            margin-bottom: 15px;
+            font-size: 2.8rem;
+            margin-bottom: 10px;
             line-height: 1.2;
         }
 
         p {
             color: #7a4f5a;
-            margin-bottom: 40px;
+            margin-bottom: 30px; /* Reduced slightly to save height */
             font-size: 1.2rem;
             font-weight: 500;
         }
@@ -81,14 +82,14 @@
         .btn-container {
             display: flex;
             justify-content: center;
-            gap: 25px; /* More space between buttons */
+            gap: 20px;
             position: relative;
             z-index: 20;
         }
 
         button {
-            padding: 15px 40px; /* Bigger, more clickable buttons */
-            font-size: 1.3rem;
+            padding: 15px 35px;
+            font-size: 1.2rem;
             font-weight: 700;
             border: none;
             border-radius: 50px;
@@ -113,22 +114,23 @@
             color: #ff4d6d;
         }
 
-        /* --- CHANGED SECTION ONLY --- */
+        /* --- THE TEXT YOU WANTED ADJUSTED --- */
         .shy-text {
             color: #5d469f;
-            font-size: 1.1rem; /* Slightly larger to look good */
-            font-weight: 600;  /* Bolder */
-            font-style: italic; /* Cute italic style */
-            margin-top: 60px;   /* MOVED DOWN: Increased from 20px to 60px */
+            font-size: 1rem; 
+            font-weight: 600;  
+            font-style: italic;
+            
+            /* Pushed down, but because the box is smaller, it looks proportionate now */
+            margin-top: 50px;   
             opacity: 0.8;
         }
-        /* --------------------------- */
 
         /* Class for the running button */
         .move-mode {
             position: absolute;
             z-index: 9999; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2); /* Shadow when flying */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
         
         /* --- CONFETTI --- */
@@ -166,7 +168,7 @@
     </div>
 
     <script>
-        // --- LOGIC (Untouched) ---
+        // --- LOGIC ---
 
         const noBtn = document.getElementById('noBtn');
         const yesBtn = document.getElementById('yesBtn');
