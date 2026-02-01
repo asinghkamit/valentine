@@ -172,11 +172,10 @@
 </head>
 <body>
 
-    <!-- AUDIO ELEMENT (HIDDEN) -->
-    <!-- Put your 'only one' song file here. Example: 'only_one.mp3' -->
-    <audio id="loveSong">
+    <!-- AUDIO ELEMENT - Added 'loop' so it keeps playing -->
+    <audio id="loveSong" loop>
+        <!-- Replace with your specific file path or URL -->
         <source src="https://www.myinstants.com/media/sounds/kanye-west-only-one.mp3" type="audio/mpeg">
-        <!-- If you have a local file, change the src to "only_one.mp3" -->
     </audio>
 
     <div id="bg-container"></div>
@@ -203,23 +202,43 @@
         const bgContainer = document.getElementById('bg-container');
         const audio = document.getElementById('loveSong');
         
-        // Flag to control fireworks
         let fireworksActive = false;
+
+        // --- MUSIC LOGIC: START IMMEDIATELY ON ANY INTERACTION ---
+        // This ensures music plays as soon as they touch the screen or move mouse
+        // and keeps playing regardless of what button is clicked later.
+        function attemptPlay() {
+            if(audio.paused) {
+                audio.play().then(() => {
+                    // Remove listeners once playing so we don't spam
+                    document.removeEventListener('click', attemptPlay);
+                    document.removeEventListener('touchstart', attemptPlay);
+                    document.removeEventListener('mousemove', attemptPlay);
+                }).catch(e => {
+                    console.log("Auto-play prevented, waiting for interaction.");
+                });
+            }
+        }
+        // Add listeners to document to catch the FIRST interaction anywhere
+        document.addEventListener('click', attemptPlay);
+        document.addEventListener('touchstart', attemptPlay);
+        document.addEventListener('mousemove', attemptPlay);
+        // Try once on load just in case browser allows it
+        attemptPlay();
+
 
         // --- RANDOM TEXT PHRASES FOR 'NO' BUTTON ---
         const phrases = [
-            "Nice try! 😜",
-            "Too slow! 🐢",
-            "Can't catch me! 🏃‍♂️",
-            "You love me! ❤️",
-            "Nope! 😈",
-            "Missed! 😛",
-            "Try again! 😂",
-            "Not today! 🚫"
+            "Nice try! 😜", "Too slow! 🐢", "Can't catch me! 🏃‍♂️",
+            "You love me! ❤️", "Nope! 😈", "Missed! 😛",
+            "Try again! 😂", "Not today! 🚫"
         ];
 
         // 1. RUNAWAY LOGIC + FLOATING TEXT
         function handleNo() {
+            // Ensure music is playing if they hover 'No' first
+            attemptPlay(); 
+
             const rect = noBtn.getBoundingClientRect();
             const x = rect.left + (rect.width / 2);
             const y = rect.top;
@@ -255,39 +274,43 @@
 
         // 2. SUCCESS LOGIC
         function sayYes() {
-            // A. Remove Buttons Immediately
+            // Ensure music is playing (if not already), but DO NOT restart it
+            if (audio.paused) {
+                audio.play();
+            }
+
+            // A. Remove Buttons
             if(noBtn) noBtn.remove();
             yesBtn.remove();
             document.querySelector('.shy-text').style.display = 'none';
 
-            // B. Play Song
-            audio.play().catch(e => console.log("Audio play error: " + e));
-
-            // C. Start Fireworks (Before opening the "Yeey" page)
+            // B. Start Fireworks (Shows for 5 seconds)
             fireworksActive = true;
             startFireworks();
 
-            // D. Wait 5 Seconds, then show the "Yeey" Page
+            // C. Wait 5 Seconds (Fireworks + Old Bear)
             setTimeout(function() {
-                // Stop generating new fireworks (fade out)
+                
+                // Stop creating new fireworks
                 fireworksActive = false;
                 
-                // Change Content
+                // D. CHANGE CARD CONTENT (To 'YEEY')
                 card.innerHTML = `
                     <img src="https://media.tenor.com/gUiu1zyxfzYAAAAi/bear-kiss-bear-kisses.gif" alt="Hugging Bears" style="max-width: 300px;">
                     <h1>YEEEY! ❤️</h1>
                     <p>I knew you would say yes! See you soon!</p>
                 `;
 
-                // E. Wait 3 more seconds for her to read it, then WhatsApp
+                // E. Wait 5 MORE seconds (Reading Time)
                 setTimeout(function() {
                     let phoneNumber = "918968492244"; 
                     let message = "Yes! I will be your Valentine babu! 😘😘❤️";
+                    // Opens in NEW TAB so music keeps playing in this tab
                     let url = "https://wa.me/" + phoneNumber + "?text=" + encodeURIComponent(message);
                     window.open(url, '_blank');
-                }, 3000); 
+                }, 5000); 
 
-            }, 5000); // 5 Seconds Interval
+            }, 5000); 
         }
 
         // 3. BACKGROUND HEARTS & STARS
@@ -390,9 +413,7 @@
                     const y = Math.random() * (canvas.height * 0.7);
                     createExplosion(x, y);
                 } else {
-                    // Stop creating new ones, clear interval
                     clearInterval(fireworksInterval);
-                    // Clear canvas after particles fade
                     setTimeout(() => { ctx.clearRect(0,0,canvas.width, canvas.height); }, 2000);
                 }
             }, 500);
