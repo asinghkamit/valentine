@@ -214,19 +214,28 @@
             startConfetti();
         }
 
-        // 3. BACKGROUND HEARTS
-        function createHeart() {
-            const heart = document.createElement('div');
-            heart.classList.add('heart');
-            heart.innerHTML = ['❤️', '⭐'];
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.fontSize = Math.random() * 20 + 10 + 'px';
-            heart.style.animationDuration = Math.random() * 2 + 3 + 's';
-            bgContainer.appendChild(heart);
+         // 3. BACKGROUND HEARTS & STARS
+        function createFloatingElement() {
+            const el = document.createElement('div');
+            el.classList.add('bg-item');
             
-            setTimeout(() => heart.remove(), 5000);
+            // --- CHANGE HERE: Randomly pick Heart or Star ---
+            const shapes = ['❤️', '⭐'];
+            const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
+            el.innerHTML = randomShape;
+
+            // Random positioning and size
+            el.style.left = Math.random() * 100 + 'vw';
+            el.style.fontSize = Math.random() * 20 + 15 + 'px'; // Size between 15px and 35px
+            el.style.animationDuration = Math.random() * 3 + 4 + 's'; // Duration 4s to 7s
+            
+            bgContainer.appendChild(el);
+            
+            setTimeout(() => el.remove(), 7000); // Clean up
         }
-        setInterval(createHeart, 300);
+        
+        // Run this every 300 milliseconds
+        setInterval(createFloatingElement, 300);
 
         // 4. CONFETTI EFFECT
         function startConfetti() {
